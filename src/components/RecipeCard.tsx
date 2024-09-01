@@ -3,7 +3,7 @@ import { Meal, INGREDIENT_KEYS, IngredientKey } from '../types'; // Adjust the p
 
 interface CardProps {
   meal: Meal;
-  onClick: () => void;
+  onClick: (idMeal: string) => void;
   buttonText: string;
   isExpanded?: boolean;
 }
@@ -72,7 +72,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
           </div>
         )}
         <button
-          onClick={onClick}
+          onClick={() => onClick(meal.idMeal)} // Pass the meal ID when the button is clicked
           className="p-2 w-full bg-blue-500 text-white rounded"
         >
           {buttonText}

@@ -1,31 +1,33 @@
-// components/LoadingScreen.tsx
-import loading from "/images/loading.png"
-import { useEffect, useState } from "react";
 
-const LoadingScreen = () => {
-  const [visible, setVisible] = useState(true);
+import React, { useEffect, useState } from 'react';
+import loading from '/images/loading.png'
+
+interface LoadingScreenProps {
+  isVisible: boolean;
+}
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ isVisible }) => {
+  const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
+    if (isVisible) {
+      setShouldRender(true);
+    } else {
+      // Delay hiding the screen to allow for fade-out effect
+      const timer = setTimeout(() => setShouldRender(false), 300); // Duration of the transition
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-white transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-    >
-       <img
-                src={loading}
-                alt="loading"
-                width={0}
-                height={0}
-                sizes="100"
-                className="w-auto h-[50vh] rounded"
-              />
-    </div>
+    shouldRender && (
+      <div
+        className={`fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50 transition-opacity duration-300 ease-out ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <img src={loading} alt="loading" className='w-screen h-screen'/>      </div>
+    )
   );
 };
 

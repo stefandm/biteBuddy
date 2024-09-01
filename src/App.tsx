@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, provider } from './firebase/config';
 import { searchMeals, getMealDetails } from './api/mealapi';
@@ -6,9 +6,7 @@ import { addRecipe, listenToUserRecipes, deleteRecipe } from './firebase/firesto
 import useClickOutside from './hooks/useClickOutside';
 import RecipeCard from './components/RecipeCard';
 import LoadingScreen from './components/LoadingScreen';
-import { Meal,Recipe,User,INGREDIENT_KEYS, IngredientKey,ApiResponse } from './types';
-// Define types for better type-checking
-
+import { Meal, Recipe, User, INGREDIENT_KEYS, IngredientKey, ApiResponse } from './types';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -105,10 +103,6 @@ const App: React.FC = () => {
     }
   }, [userRecipes]);
   
-  
-  
-  
-
   const handleSearch = async () => {
     if (query.trim() === '') {
       setSearchResults([]);
@@ -125,10 +119,11 @@ const App: React.FC = () => {
     );
   
     setSearchResults(filteredResults);
+    setSuggestions([]);
+    setSelectedMeal(null); // Clear the selected meal
+    setSelectedRecipeId(null); // Clear the selected recipe ID
   };
   
-  
-
   const handleSearchTypeChange = (type: 'recipe' | 'ingredient') => {
     setSearchType(type);
   };
@@ -155,6 +150,7 @@ const App: React.FC = () => {
       );
     }
   };
+  
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -163,7 +159,6 @@ const App: React.FC = () => {
   
     if (query.length > 2) {
       const response = await searchMeals(query);
-      // Ensure 'response.meals' is treated as an array
       const results = response.meals || [];
       setSuggestions(results.slice(0, 7));
     } else {
@@ -172,17 +167,32 @@ const App: React.FC = () => {
   };
   
   
-  
-
   const handleSelectMeal = async (idMeal: string) => {
-    const meal = searchResults.find((m) => m.idMeal === idMeal);
+    console.log('handleSelectMeal called with idMeal:', idMeal);
+    const meal = searchResults.find((m) => m.idMeal === idMeal) ||
+                 recommendations.find((m) => m.idMeal === idMeal) ||
+                 suggestions.find((m) => m.idMeal === idMeal);
     if (meal) {
       setSelectedMeal(meal);
       setSelectedRecipeId(null);
-      const details = await getMealDetails(idMeal);
-      setSelectedMeal(details);
+      try {
+        const details = await getMealDetails(idMeal);
+        console.log('Meal details fetched:', details);
+        setSelectedMeal(details);
+      } catch (error) {
+        console.error('Error fetching meal details:', error);
+      }
+      // Clear suggestions after selecting a meal
+      setSuggestions([]);
+      setQuery('');
+    } else {
+      console.error('Meal not found in search results, recommendations, or suggestions:', idMeal);
     }
   };
+  
+  
+  
+  
   const handleAddRecipe = async () => {
     if (!user) {
       alert('You must be logged in to add a recipe.');
@@ -254,7 +264,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      {!isLoaded && <LoadingScreen />}
+      <LoadingScreen isVisible={!isLoaded} />
       <div className="flex h-screen bg-gray-100">
         <div className="w-1/4 bg-white border-r border-gray-300 p-4 overflow-auto">
           <h2 className="text-xl font-bold mb-4">My Saved Recipes</h2>
@@ -314,7 +324,12 @@ const App: React.FC = () => {
                   ref={inputRef}
                 />
                 <button
-                  onClick={handleSearch}
+                  onClick={() => {
+                    handleSearch();
+                    setQuery('');
+                    setSelectedMeal(null);
+                    setSelectedRecipeId(null);
+                  }}
                   className="p-2 bg-blue-500 text-white rounded-r-md"
                 >
                   Search
