@@ -6,7 +6,9 @@ import { addRecipe, listenToUserRecipes, deleteRecipe } from './firebase/firesto
 import useClickOutside from './hooks/useClickOutside';
 import RecipeCard from './components/RecipeCard';
 import LoadingScreen from './components/LoadingScreen';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { Meal, Recipe, User, INGREDIENT_KEYS, IngredientKey, ApiResponse } from './types';
+import RecipeSkeleton from './components/RecipeSkeleton';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -19,6 +21,8 @@ const App: React.FC = () => {
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [recommendations, setRecommendations] = useState<Meal[]>([]);
   const [expandedMealId, setExpandedMealId] = useState<string | null>(null);
+  const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<'recipe' | 'ingredient'>('recipe');
 
@@ -71,59 +75,65 @@ const App: React.FC = () => {
 
   const generateRecommendations = useCallback(async (recipes: Recipe[]) => {
     if (recipes.length === 0) return;
-  
+
     const ingredients = recipes
       .flatMap((recipe) =>
         INGREDIENT_KEYS
           .map((key) => recipe.meal[key as IngredientKey])
           .filter((value): value is string => value !== null && value !== '' && typeof value === 'string')
       );
-  
+
     if (ingredients.length > 0) {
+      setIsLoadingRecommendations(true);
       const uniqueIngredients = [...new Set(ingredients)];
       const recommendedMeals: Meal[] = [];
-  
+
       for (const ingredient of uniqueIngredients.slice(0, 5)) {
         const response: ApiResponse = await searchMeals(ingredient);
-  
+
         if (response.meals) {
           const filteredResults = response.meals.filter(
             (meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
           );
-  
+
           recommendedMeals.push(...filteredResults.slice(0, 3));
         }
       }
-  
+
       const uniqueMeals = Array.from(
         new Map(recommendedMeals.map((meal) => [meal.idMeal, meal])).values()
       );
-  
+
       setRecommendations(uniqueMeals);
+      setIsLoadingRecommendations(false);
     }
   }, [userRecipes]);
-  
+
   const handleSearch = async () => {
     if (query.trim() === '') {
       setSearchResults([]);
       return;
     }
-  
+
+    setIsLoadingSearchResults(true);
     const isIngredientSearch = searchType === 'ingredient';
     const response = await searchMeals(query, isIngredientSearch);
-  
+
     // Ensure 'response.meals' is treated as an array
     const results = response.meals || [];
+
+    // Filter out meals that are already in the user's saved recipes
     const filteredResults = results.filter(
       (meal: Meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
     );
-  
+
     setSearchResults(filteredResults);
     setSuggestions([]);
     setSelectedMeal(null); // Clear the selected meal
     setSelectedRecipeId(null); // Clear the selected recipe ID
+    setIsLoadingSearchResults(false);
   };
-  
+
   const handleSearchTypeChange = (type: 'recipe' | 'ingredient') => {
     setSearchType(type);
   };
@@ -150,13 +160,12 @@ const App: React.FC = () => {
       );
     }
   };
-  
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setQuery(query);
     setHighlightedIndex(-1);
-  
+
     if (query.length > 2) {
       const response = await searchMeals(query);
       const results = response.meals || [];
@@ -165,8 +174,7 @@ const App: React.FC = () => {
       setSuggestions([]);
     }
   };
-  
-  
+
   const handleSelectMeal = async (idMeal: string) => {
     console.log('handleSelectMeal called with idMeal:', idMeal);
     const meal = searchResults.find((m) => m.idMeal === idMeal) ||
@@ -189,10 +197,7 @@ const App: React.FC = () => {
       console.error('Meal not found in search results, recommendations, or suggestions:', idMeal);
     }
   };
-  
-  
-  
-  
+
   const handleAddRecipe = async () => {
     if (!user) {
       alert('You must be logged in to add a recipe.');
@@ -394,39 +399,58 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {searchResults.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Search Results</h2>
+          <div className="mb-8">
+            {isLoadingSearchResults ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {searchResults.map((meal) => (
-                  <RecipeCard
-                    key={meal.idMeal}
-                    meal={meal}
-                    onClick={() => handleSelectMeal(meal.idMeal)}
-                    buttonText="View Recipe"
-                    isExpanded={expandedMealId === meal.idMeal}
-                  />
-                ))}
+                <RecipeSkeleton cards={8}/>
               </div>
-            </div>
-          )}
+            ) : searchResults.length > 0 ? (
+              <>
+                <h2 className="text-xl font-bold mb-4">Search Results</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {searchResults.map((meal) => (
+                    <RecipeCard
+                      key={meal.idMeal}
+                      meal={meal}
+                      onClick={() => handleSelectMeal(meal.idMeal)}
+                      buttonText="View Recipe"
+                      isExpanded={expandedMealId === meal.idMeal}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p>No search results.</p>
+            )}
+          </div>
 
-          {recommendations.length > 0 && (
-            <div className="mb-8">
+          <div className="mb-8">
+            {isLoadingRecommendations ? (
+            <div>
               <h2 className="text-xl font-bold mb-4">Recommended for You</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {recommendations.map((meal) => (
-                  <RecipeCard
-                    key={meal.idMeal}
-                    meal={meal}
-                    onClick={() => handleSelectMeal(meal.idMeal)}
-                    buttonText="View Recipe"
-                    isExpanded={expandedMealId === meal.idMeal}
-                  />
-                ))}
+                <RecipeSkeleton cards={8}/>
               </div>
             </div>
-          )}
+            ) : recommendations.length > 0 ? (
+              <>
+                <h2 className="text-xl font-bold mb-4">Recommended for You</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {recommendations.map((meal) => (
+                    <RecipeCard
+                      key={meal.idMeal}
+                      meal={meal}
+                      onClick={() => handleSelectMeal(meal.idMeal)}
+                      buttonText="View Recipe"
+                      isExpanded={expandedMealId === meal.idMeal}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p>No recommendations available.</p>
+            )}
+          </div>
         </div>
       </div>
     </>

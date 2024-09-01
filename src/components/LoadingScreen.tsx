@@ -14,7 +14,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isVisible }) => {
       setShouldRender(true);
     } else {
       // Delay hiding the screen to allow for fade-out effect
-      const timer = setTimeout(() => setShouldRender(false), 300); // Duration of the transition
+      const timer = setTimeout(() => setShouldRender(false), 3000); // Duration of the transition
       return () => clearTimeout(timer);
     }
   }, [isVisible]);
