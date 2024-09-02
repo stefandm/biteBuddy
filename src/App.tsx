@@ -258,13 +258,31 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="flex  h-screen bg-gray-100">
-        <div className="w-1/4 bg-white border-r border-gray-300 p-4 overflow-auto">
+      <div className="flex flex-col md:flex-row bg-gray-100">
+        <div className="md:min-w-[15vw] bg-white border-r border-gray-300 p-4 overflow-auto">{user ? (
+          <div className='flex flex-col items-center gap-2'>
+            <h1 className='text-4xl text-center'>Welcome, {user.displayName}</h1>
+            <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" />
+            <button
+              onClick={handleSignOut}
+              className="p-1 bg-red-500  text-white rounded"
+            >
+              Sign Out
+            </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleSignIn}
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Sign In with Google
+            </button>
+          )}
           <h2 className="text-xl font-bold mb-4 text-center">My Saved Recipes</h2>
           {userRecipes.length > 0 ? (
-            <ul>
+            <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
-                <li key={recipe.id} className="mb-2 flex items-center">
+                <li key={recipe.id} className="mb-2 sm:flex md:flex-col flex lg:flex-row ">
                   <button
                     onClick={() => handleSelectRecipe(recipe)}
                     className={`w-full text-left p-2 rounded ${
@@ -287,32 +305,15 @@ const App: React.FC = () => {
           ) : (
             <p>No saved recipes.</p>
           )}
-          {user ? (
-            <div className='flex flex-col items-center'>
-            <h1 className='text-2xl text-center'>Welcome, {user.displayName}</h1>
-            <button
-              onClick={handleSignOut}
-              className="mt-4 p-2 bg-red-500 w-fit text-white rounded"
-            >
-              Sign Out
-            </button>
-            </div>
-          ) : (
-            <button
-              onClick={handleSignIn}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
-            >
-              Sign In with Google
-            </button>
-          )}
+          
         </div>
         <div className=" p-4 overflow-auto">
-          <div className="relative mb-8 w-full max-w-md">
+          <div className="relative mb-8 w-full md:max-w-md">
             <div className="flex flex-col">
-              <div className="flex">
+              <div className="flex ">
                 <input
                   type="text"
-                  placeholder="Search for a meal..."
+                  placeholder="Search for a meal"
                   value={query}
                   onChange={handleInputChange}
                   onKeyDown={handleSearchKeyDown}
@@ -392,13 +393,13 @@ const App: React.FC = () => {
 
           <div className="mb-8">
             {isLoadingSearchResults ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <RecipeSkeleton cards={8}/>
               </div>
             ) : searchResults.length > 0 ? (
               <>
                 <h2 className="text-xl font-bold mb-4">Search Results</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {searchResults.map((meal) => (
                     <RecipeCard
                       key={meal.idMeal}
@@ -419,14 +420,14 @@ const App: React.FC = () => {
             {isLoadingRecommendations ? (
             <div>
               <h2 className="text-xl font-bold mb-4">Recommended for You</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <RecipeSkeleton cards={8}/>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <RecipeSkeleton cards={6} />
               </div>
             </div>
             ) : recommendations.length > 0 ? (
               <>
                 <h2 className="text-xl font-bold mb-4">Recommended for You</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {recommendations.map((meal) => (
                     <RecipeCard
                       key={meal.idMeal}

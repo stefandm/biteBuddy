@@ -25,20 +25,20 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
 
   return (
     <div className="border border-gray-300 rounded flex flex-col">
-      <div className="flex flex-col justify-evenly gap-2 items-center">
+      <div className="flex flex-col justify-between h-full items-center ">
         {isExpanded && (
           <div className="flex flex-col items-center">
             <h2 className="text-xl font-semibold text-center my-4">{meal.strMeal}</h2>
-            <div className="flex justify-evenly w-full">
+            <div className="flex-col flex md:flex-row justify-evenly w-full">
               <img
                 src={meal.strMealThumb}
                 alt={meal.strMeal}
                 width={0}
                 height={0}
                 sizes="100"
-                className="w-auto h-[50vh] rounded"
+                className="w-auto object-cover h-[40vh]  lg:w-[30vw] rounded"
               />
-              <div className="flex flex-col justify-between">
+              <div className="flex flex-col justify-between items-center">
                 <h3 className="text-lg font-semibold mb-2">Ingredients:</h3>
                 <ul className="pl-5 mb-4">
                   {ingredients.length > 0 ? (
@@ -59,21 +59,23 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
           </div>
         )}
         {!isExpanded && (
-          <div className="">
+          <div className="flex flex-col h-full ">
             <img
               src={meal.strMealThumb}
               alt={meal.strMeal}
               width={0}
               height={0}
               sizes="100"
-              className="w-fit h-fit rounded"
+              className="w-full h-fit object-cover rounded"
             />
-            <h2 className="text-xl font-semibold text-center">{meal.strMeal}</h2>
+            <div className='flex justify-center h-full items-center'>
+            <h2 className="text-xl font-medium text-center">{meal.strMeal}</h2>
+            </div>
           </div>
         )}
         <button
           onClick={() => onClick(meal.idMeal)} // Pass the meal ID when the button is clicked
-          className="p-2 w-full bg-blue-500 text-white rounded"
+          className="p-2 w-full bg-blue-500 justify-self-end text-white rounded "
         >
           {buttonText}
         </button>
