@@ -5,7 +5,6 @@ import { searchMeals, getMealDetails } from './api/mealapi';
 import { addRecipe, listenToUserRecipes, deleteRecipe } from './firebase/firestoreService';
 import useClickOutside from './hooks/useClickOutside';
 import RecipeCard from './components/RecipeCard';
-import LoadingScreen from './components/LoadingScreen';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { Meal, Recipe, User, INGREDIENT_KEYS, IngredientKey, ApiResponse } from './types';
 import RecipeSkeleton from './components/RecipeSkeleton';
@@ -23,9 +22,8 @@ const App: React.FC = () => {
   const [expandedMealId, setExpandedMealId] = useState<string | null>(null);
   const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<'recipe' | 'ingredient'>('recipe');
-
+  
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
@@ -34,15 +32,6 @@ const App: React.FC = () => {
     handler: () => setSuggestions([]),
   });
 
-  useEffect(() => {
-    const handleComplete = () => setIsLoaded(true);
-    if (document.readyState === 'complete') {
-      handleComplete();
-    } else {
-      window.addEventListener('load', handleComplete);
-      return () => window.removeEventListener('load', handleComplete);
-    }
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -269,10 +258,9 @@ const App: React.FC = () => {
 
   return (
     <>
-      <LoadingScreen isVisible={!isLoaded} />
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex  h-screen bg-gray-100">
         <div className="w-1/4 bg-white border-r border-gray-300 p-4 overflow-auto">
-          <h2 className="text-xl font-bold mb-4">My Saved Recipes</h2>
+          <h2 className="text-xl font-bold mb-4 text-center">My Saved Recipes</h2>
           {userRecipes.length > 0 ? (
             <ul>
               {userRecipes.map((recipe) => (
@@ -291,7 +279,7 @@ const App: React.FC = () => {
                     onClick={() => handleDeleteRecipe(recipe.id)}
                     className="ml-2 text-red-500 hover:text-red-700"
                   >
-                    Delete
+                    ❌
                   </button>
                 </li>
               ))}
@@ -300,12 +288,15 @@ const App: React.FC = () => {
             <p>No saved recipes.</p>
           )}
           {user ? (
+            <div className='flex flex-col items-center'>
+            <h1 className='text-2xl text-center'>Welcome, {user.displayName}</h1>
             <button
               onClick={handleSignOut}
-              className="mt-4 p-2 bg-red-500 text-white rounded"
+              className="mt-4 p-2 bg-red-500 w-fit text-white rounded"
             >
               Sign Out
             </button>
+            </div>
           ) : (
             <button
               onClick={handleSignIn}
@@ -315,7 +306,7 @@ const App: React.FC = () => {
             </button>
           )}
         </div>
-        <div className="w-3/4 p-4 overflow-auto">
+        <div className=" p-4 overflow-auto">
           <div className="relative mb-8 w-full max-w-md">
             <div className="flex flex-col">
               <div className="flex">
@@ -420,7 +411,7 @@ const App: React.FC = () => {
                 </div>
               </>
             ) : (
-              <p>No search results.</p>
+              <p></p>
             )}
           </div>
 
