@@ -62,41 +62,67 @@ const App: React.FC = () => {
     }
   }, [selectedRecipeId, userRecipes]);
 
+
+  
   const generateRecommendations = useCallback(async (recipes: Recipe[]) => {
     if (recipes.length === 0) return;
-
+  
+    // Extract and filter unique ingredients from user recipes
     const ingredients = recipes
       .flatMap((recipe) =>
         INGREDIENT_KEYS
           .map((key) => recipe.meal[key as IngredientKey])
           .filter((value): value is string => value !== null && value !== '' && typeof value === 'string')
       );
-
+  
     if (ingredients.length > 0) {
       setIsLoadingRecommendations(true);
+  
       const uniqueIngredients = [...new Set(ingredients)];
       const recommendedMeals: Meal[] = [];
-
-      for (const ingredient of uniqueIngredients.slice(0, 5)) {
-        const response: ApiResponse = await searchMeals(ingredient);
-
-        if (response.meals) {
-          const filteredResults = response.meals.filter(
-            (meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
-          );
-
-          recommendedMeals.push(...filteredResults.slice(0, 3));
+  
+      // Iterate over unique ingredients and fetch meals
+      for (const ingredient of uniqueIngredients.slice(0, 10)) {
+        try {
+          const response: ApiResponse = await searchMeals(ingredient);
+  
+          if (response.meals) {
+            const filteredResults = response.meals.filter(
+              (meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
+            );
+  
+            recommendedMeals.push(...filteredResults);
+          }
+        } catch (error) {
+          console.error('Error fetching meals:', error);
         }
       }
-
+  
+      // Remove duplicates from recommendations
       const uniqueMeals = Array.from(
         new Map(recommendedMeals.map((meal) => [meal.idMeal, meal])).values()
       );
-
-      setRecommendations(uniqueMeals);
+  
+      // Ensure recommendations are updated correctly
+      const filteredRecommendations = uniqueMeals.filter(
+        (meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
+      );
+  
+      console.log('User Recipes:', userRecipes.map(recipe => recipe.meal.idMeal));
+      console.log('Unique Meals:', uniqueMeals.map(meal => meal.idMeal));
+      console.log('Filtered Recommendations:', filteredRecommendations.map(meal => meal.idMeal));
+  
+      setRecommendations(filteredRecommendations);
       setIsLoadingRecommendations(false);
     }
   }, [userRecipes]);
+  
+  useEffect(() => {
+    generateRecommendations(userRecipes);
+  }, [userRecipes, generateRecommendations]);
+  
+
+  
 
   const handleSearch = async () => {
     if (query.trim() === '') {
@@ -187,6 +213,8 @@ const App: React.FC = () => {
     }
   };
 
+
+ 
   const handleAddRecipe = async () => {
     if (!user) {
       alert('You must be logged in to add a recipe.');
@@ -195,7 +223,7 @@ const App: React.FC = () => {
 
     if (selectedMeal) {
       const recipeExists = userRecipes.some(
-        (recipe) => recipe.meal.idMeal === selectedMeal.idMeal
+        (recipe) => recipe.meal.idMeal === selectedMeal?.idMeal
       );
 
       if (recipeExists) {
@@ -258,7 +286,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row bg-gray-100">
+      <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
         <div className="md:min-w-[15vw] bg-white border-r border-gray-300 p-4 overflow-auto">{user ? (
           <div className='flex flex-col items-center gap-2'>
             <h1 className='text-4xl text-center'>Welcome, {user.displayName}</h1>
@@ -377,6 +405,7 @@ const App: React.FC = () => {
           {selectedMeal && (
             <div className="mb-8 flex flex-col">
               <RecipeCard
+                // exists={recipeExists}
                 meal={selectedMeal}
                 onClick={handleAddRecipe}
                 buttonText="Add to My Recipes"
