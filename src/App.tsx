@@ -24,7 +24,7 @@ const App: React.FC = () => {
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<'recipe' | 'ingredient'>('recipe');
   
-  const inputRef = useRef<HTMLInputElement>(null);
+  const scrollToTopRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
   useClickOutside({
@@ -208,7 +208,7 @@ const App: React.FC = () => {
         setSelectedMeal(details);  // Update the selected meal with details
   
         // Scroll to the top of the page
-        inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrollToTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (error) {
         console.error('Error fetching meal details:', error);
       }
@@ -269,6 +269,7 @@ const App: React.FC = () => {
   const handleSelectRecipe = (recipe: Recipe) => {
     setSelectedRecipeId(recipe.id);
     setExpandedMealId(recipe.meal.idMeal === expandedMealId ? null : recipe.meal.idMeal);
+    scrollToTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleCloseRecipe = () => {
@@ -295,32 +296,35 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-        <div className="md:min-w-[20vw] bg-white border-r border-gray-300 p-4 overflow-auto">
-          {user ? (
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+      <div className="bg-white border-r border-gray-300 p-4 overflow-auto
+        md:sticky md:top-0 md:h-screen md:max-w-[20vw]
+        relative flex-shrink-0"
+      >
+        {user ? (
           <div className='flex flex-col items-center gap-2'>
             <h1 className='text-4xl text-center'>Welcome, {user.displayName}</h1>
             {/* <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" /> */}
             <button
               onClick={handleSignOut}
-              className="p-1 bg-red-500  text-white rounded"
+              className="p-1 bg-red-500 text-white rounded"
             >
               Sign Out
             </button>
-            </div>
-          ) : (
-            <div className='flex-col flex items-center'>
+          </div>
+        ) : (
+          <div className='flex-col flex items-center'>
             <button
               onClick={handleSignIn}
               className="mt-4 p-2 bg-blue-500 text-white rounded"
             >
               Sign In with Google
             </button>
-            </div>
-          )}
-          
-          {userRecipes.length > 0 ? (
-            <>
+          </div>
+        )}
+
+        {userRecipes.length > 0 && (
+          <>
             <h2 className="text-xl font-bold mb-4 text-center">My Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
@@ -344,152 +348,145 @@ const App: React.FC = () => {
                 </li>
               ))}
             </ul>
-            </>
-          ) : (
-            null
-          )}
-          
-        </div>
-        <div className=" p-4 overflow-auto">
-          <div className="relative mb-8 w-full md:max-w-md">
-            <div className="flex flex-col">
-              <div className="flex ">
-                <input
-                  type="text"
-                  placeholder="Search for a meal"
-                  value={query}
-                  onChange={handleInputChange}
-                  onKeyDown={handleSearchKeyDown}
-                  className="p-2 border-gray-300 rounded-l-md flex-1"
-                  ref={inputRef}
-                />
-                <button
-                  onClick={() => {
-                    handleSearch();
-                    setQuery('');
-                    setSelectedMeal(null);
-                    setSelectedRecipeId(null);
-                  }}
-                  className="p-2 bg-blue-500 text-white rounded-r-md"
-                >
-                  Search
-                </button>
-              </div>
-
-              <div className="flex items-center mt-2">
-                <input
-                  type="radio"
-                  id="recipe"
-                  checked={searchType === 'recipe'}
-                  onChange={() => handleSearchTypeChange('recipe')}
-                  className="mr-2"
-                />
-                <label htmlFor="recipe" className="mr-4">Search by Recipe</label>
-
-                <input
-                  type="radio"
-                  id="ingredient"
-                  checked={searchType === 'ingredient'}
-                  onChange={() => handleSearchTypeChange('ingredient')}
-                  className="mr-2"
-                />
-                <label htmlFor="ingredient">Search by Ingredient</label>
-              </div>
-            </div>
-
-            {suggestions.length > 0 && (
-              <ul
-                ref={suggestionsRef}
-                className="absolute left-0 right-0 bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-10"
-              >
-                {suggestions.map((suggestion, index) => (
-                  <li
-                    key={suggestion.idMeal}
-                    onClick={() => handleSelectMeal(suggestion.idMeal)}
-                    className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                      index === highlightedIndex ? 'bg-gray-300' : ''
-                    }`}
-                  >
-                    {suggestion.strMeal}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {selectedMeal && (
-            <div className="mb-8 flex flex-col">
-              <RecipeCard
-                // exists={recipeExists}
-                meal={selectedMeal}
-                onClick={handleAddRecipe}
-                buttonText="Add to My Recipes"
-                isExpanded={true}
+          </>
+        )}
+      </div>
+      <div className="flex-1 p-4 overflow-auto">
+        <div className="relative mb-8 w-full md:max-w-md">
+          <div className="flex flex-col">
+            <div className="flex ">
+              <input
+                type="text"
+                placeholder="Search for a meal"
+                value={query}
+                onChange={handleInputChange}
+                onKeyDown={handleSearchKeyDown}
+                className="p-2 border-gray-300 rounded-l-md flex-1"
               />
               <button
-                onClick={handleCloseRecipe}
-                className="mt-4 p-2 bg-gray-500 w-full text-white rounded"
+                onClick={() => {
+                  handleSearch();
+                  setQuery('');
+                  setSelectedMeal(null);
+                  setSelectedRecipeId(null);
+                }}
+                className="p-2 bg-blue-500 text-white rounded-r-md"
               >
-                Close
+                Search
               </button>
             </div>
-          )}
 
-          <div className="mb-8">
-            {isLoadingSearchResults ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <RecipeSkeleton cards={8}/>
-              </div>
-            ) : searchResults.length > 0 ? (
-              <>
-                <h2 className="text-xl font-bold mb-4">Search Results</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {searchResults.map((meal) => (
-                    <RecipeCard
-                      key={meal.idMeal}
-                      meal={meal}
-                      onClick={() => handleSelectMeal(meal.idMeal)}
-                      buttonText="View Recipe"
-                      isExpanded={expandedMealId === meal.idMeal}
-                    />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <p></p>
-            )}
+            <div className="flex items-center mt-2">
+              <input
+                type="radio"
+                id="recipe"
+                checked={searchType === 'recipe'}
+                onChange={() => handleSearchTypeChange('recipe')}
+                className="mr-2"
+              />
+              <label htmlFor="recipe" className="mr-4">Search by Recipe</label>
+
+              <input
+                type="radio"
+                id="ingredient"
+                checked={searchType === 'ingredient'}
+                onChange={() => handleSearchTypeChange('ingredient')}
+                className="mr-2"
+              />
+              <label htmlFor="ingredient">Search by Ingredient</label>
+            </div>
           </div>
+          <div ref={scrollToTopRef}></div>
+          {suggestions.length > 0 && (
+            <ul
+              ref={suggestionsRef}
+              className="absolute left-0 right-0 bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-10"
+            >
+              {suggestions.map((suggestion, index) => (
+                <li
+                  key={suggestion.idMeal}
+                  onClick={() => handleSelectMeal(suggestion.idMeal)}
+                  className={`p-2 cursor-pointer hover:bg-gray-200 ${
+                    index === highlightedIndex ? 'bg-gray-300' : ''
+                  }`}
+                >
+                  {suggestion.strMeal}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-          <div className="mb-8">
-            {isLoadingRecommendations ? (
+        {selectedMeal && (
+          <div className="mb-8 flex flex-col">
+            <RecipeCard
+              meal={selectedMeal}
+              onClick={handleAddRecipe}
+              buttonText="Add to My Recipes"
+              isExpanded={true}
+            />
+            <button
+              onClick={handleCloseRecipe}
+              className="mt-4 p-2 bg-gray-500 w-full text-white rounded"
+            >
+              Close
+            </button>
+          </div>
+        )}
+
+        <div className="mb-8">
+          {isLoadingSearchResults ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <RecipeSkeleton cards={8}/>
+            </div>
+          ) : searchResults.length > 0 ? (
+            <>
+              <h2 className="text-xl font-bold mb-4">Search Results</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {searchResults.map((meal) => (
+                  <RecipeCard
+                    key={meal.idMeal}
+                    meal={meal}
+                    onClick={() => handleSelectMeal(meal.idMeal)}
+                    buttonText="View Recipe"
+                    isExpanded={expandedMealId === meal.idMeal}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <p></p>
+          )}
+        </div>
+
+        <div className="mb-8">
+          {isLoadingRecommendations ? (
             <div>
               <h2 className="text-xl font-bold mb-4">Recommended for You</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <RecipeSkeleton cards={6} />
               </div>
             </div>
-            ) : recommendations.length > 0 ? (
-              <>
-                <h2 className="text-xl font-bold mb-4">Recommended for You</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {recommendations.map((meal) => (
-                    <RecipeCard
-                      key={meal.idMeal}
-                      meal={meal}
-                      onClick={() => handleSelectMeal(meal.idMeal)}
-                      buttonText="View Recipe"
-                      isExpanded={expandedMealId === meal.idMeal}
-                    />
-                  ))}
-                </div>
-              </>
-            ) : (
-              null
-            )}
-          </div>
+          ) : recommendations.length > 0 && (
+            <>
+              <h2 className="text-xl font-bold mb-4">Recommended for You</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {recommendations.map((meal) => (
+                  <RecipeCard
+                    key={meal.idMeal}
+                    meal={meal}
+                    onClick={() => handleSelectMeal(meal.idMeal)}
+                    buttonText="View Recipe"
+                    isExpanded={expandedMealId === meal.idMeal}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
-    </>
+    </div>
+  </>
   );
 };
 
