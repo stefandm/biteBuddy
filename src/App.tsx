@@ -192,19 +192,27 @@ const App: React.FC = () => {
 
   const handleSelectMeal = async (idMeal: string) => {
     console.log('handleSelectMeal called with idMeal:', idMeal);
+    
+    // Check if the meal is in the search results, recommendations, or suggestions
     const meal = searchResults.find((m) => m.idMeal === idMeal) ||
                  recommendations.find((m) => m.idMeal === idMeal) ||
                  suggestions.find((m) => m.idMeal === idMeal);
+  
     if (meal) {
-      setSelectedMeal(meal);
-      setSelectedRecipeId(null);
+      setSelectedMeal(meal);  // Set the selected meal
+      setSelectedRecipeId(null);  // Clear the selected recipe ID
+  
       try {
         const details = await getMealDetails(idMeal);
         console.log('Meal details fetched:', details);
-        setSelectedMeal(details);
+        setSelectedMeal(details);  // Update the selected meal with details
+  
+        // Scroll to the top of the page
+        inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (error) {
         console.error('Error fetching meal details:', error);
       }
+  
       // Clear suggestions after selecting a meal
       setSuggestions([]);
       setQuery('');
@@ -212,6 +220,7 @@ const App: React.FC = () => {
       console.error('Meal not found in search results, recommendations, or suggestions:', idMeal);
     }
   };
+  
 
 
  
@@ -287,10 +296,11 @@ const App: React.FC = () => {
   return (
     <>
       <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-        <div className="md:min-w-[15vw] bg-white border-r border-gray-300 p-4 overflow-auto">{user ? (
+        <div className="md:min-w-[20vw] bg-white border-r border-gray-300 p-4 overflow-auto">
+          {user ? (
           <div className='flex flex-col items-center gap-2'>
             <h1 className='text-4xl text-center'>Welcome, {user.displayName}</h1>
-            <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" />
+            {/* <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" /> */}
             <button
               onClick={handleSignOut}
               className="p-1 bg-red-500  text-white rounded"
@@ -299,15 +309,19 @@ const App: React.FC = () => {
             </button>
             </div>
           ) : (
+            <div className='flex-col flex items-center'>
             <button
               onClick={handleSignIn}
               className="mt-4 p-2 bg-blue-500 text-white rounded"
             >
               Sign In with Google
             </button>
+            </div>
           )}
-          <h2 className="text-xl font-bold mb-4 text-center">My Saved Recipes</h2>
+          
           {userRecipes.length > 0 ? (
+            <>
+            <h2 className="text-xl font-bold mb-4 text-center">My Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
                 <li key={recipe.id} className="mb-2 sm:flex md:flex-col flex lg:flex-row ">
@@ -330,8 +344,9 @@ const App: React.FC = () => {
                 </li>
               ))}
             </ul>
+            </>
           ) : (
-            <p>No saved recipes.</p>
+            null
           )}
           
         </div>
@@ -469,7 +484,7 @@ const App: React.FC = () => {
                 </div>
               </>
             ) : (
-              <p>No recommendations available.</p>
+              null
             )}
           </div>
         </div>

@@ -36,7 +36,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
                 width={0}
                 height={0}
                 sizes="100"
-                className="w-auto object-cover h-[40vh]  lg:w-[30vw] rounded"
+                className="w-auto object-cover h-[40vh]  md:h-auto md:w-[40vw] lg:max-h-[40vh] rounded"
               />
               <div className="flex flex-col justify-between items-center">
                 <h3 className="text-lg font-semibold mb-2">Ingredients:</h3>
