@@ -75,7 +75,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
         )}
         <button
           onClick={() => onClick(meal.idMeal)} // Pass the meal ID when the button is clicked
-          className="px-6 md:px-12 py-2 w-[70%] bg-orange-400 hover:bg-orange-600 text-white rounded-t-lg"
+          className="md:py-2 w-[80%] md:w-[70%] bg-orange-400 hover:bg-orange-600 text-white rounded-t-lg"
         >
           {buttonText}
         </button>

@@ -5,7 +5,7 @@ import './index.css'
 import { SkeletonTheme } from 'react-loading-skeleton';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <SkeletonTheme baseColor="#cfe3db" highlightColor="#62b392">
+    <SkeletonTheme baseColor="#FED7AA" highlightColor="#FFEDD5">
      <App />
     </SkeletonTheme>
   </StrictMode>,

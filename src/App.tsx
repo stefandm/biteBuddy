@@ -298,11 +298,11 @@ const App: React.FC = () => {
     <>
     <div className="flex flex-col md:flex-row min-h-screen">
       <div className="bg-white border-b md:border-r border-gray-500 p-4 overflow-auto
-        md:sticky md:top-0 md:h-screen md:max-w-[20vw]
+        md:sticky md:top-0 md:h-screen md:w-[20vw]
         relative flex-shrink-0"
       >
         {user ? (
-          <div className='flex flex-col items-center gap-2'>
+          <div className='flex flex-col items-center gap-4'>
             <h1 className='text-4xl text-center'>Welcome, {user.displayName}</h1>
             {/* <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" /> */}
             <button
@@ -313,12 +313,12 @@ const App: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className='flex-col flex items-center '>
-            <h1>Welcome to Bite Buddy</h1>
+          <div className='flex-col flex items-center gap-4 mt-3'>
+            <h1 className='text-4xl text-center'>Welcome to Bite Buddy</h1>
             <h1>Sign in to save your recipe</h1>
             <button
               onClick={handleSignIn}
-              className="mt-4 p-2 bg-teal-500 text-white rounded"
+              className="mt-4 p-2 bg-orange-400 text-white rounded"
             >
               Sign In with Google
             </button>
@@ -330,22 +330,22 @@ const App: React.FC = () => {
             <h2 className="text-xl font-bold mb-4 text-center">My Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
-                <li key={recipe.id} className="mb-2 sm:flex md:flex-col flex lg:flex-row ">
+                <li key={recipe.id} className="sm:flex md:flex-col flex  rounded-lg lg:flex-row mb-2">
                   <button
                     onClick={() => handleSelectRecipe(recipe)}
-                    className={`w-full text-left p-1 rounded ${
+                    className={`w-full text-left py-1 px-2 rounded-lg hover:shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] md:text-center lg:text-left ${
                       selectedRecipeId === recipe.id
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200'
+                         ? 'bg-orange-400 text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_1px_4px_-1px]'
+                        : 'bg-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_1px_4px_-1px]'
                     }`}
                   >
                     {recipe.meal.strMeal}
                   </button>
                   <button
                     onClick={() => handleDeleteRecipe(recipe.id)}
-                    className="ml-2 text-red-500 hover:text-red-700"
+                    className="rounded-lg py-1 px-2 shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_1px_4px_-1px] hover:shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]  "
                   >
-                    ❌
+                    Delete
                   </button>
                 </li>
               ))}
@@ -363,7 +363,7 @@ const App: React.FC = () => {
                 value={query}
                 onChange={handleInputChange}
                 onKeyDown={handleSearchKeyDown}
-                className="p-2 border  border-gray-400  flex-1 rounded-l-lg "
+                className="p-2 border  border-gray-400  flex-1 rounded-l-lg focus:outline-none"
               />
               <button
                 onClick={() => {
@@ -380,16 +380,16 @@ const App: React.FC = () => {
 
             <div className="flex items-center mt-2">
               <input
-                type="radio"
+                type="checkbox"
                 id="recipe"
                 checked={searchType === 'recipe'}
                 onChange={() => handleSearchTypeChange('recipe')}
-                className="mr-2 size-4"
+                className="mr-2 size-4 "
               />
               <label htmlFor="recipe" className="mr-4">Search by Recipe</label>
 
               <input
-                type="radio"
+                type="checkbox"
                 id="ingredient"
                 checked={searchType === 'ingredient'}
                 onChange={() => handleSearchTypeChange('ingredient')}
@@ -431,7 +431,7 @@ const App: React.FC = () => {
               <div className='flex justify-center pt-4 absolute bottom-0 right-[3vw]'>
                 <button
                 onClick={handleCloseRecipe}
-                className="mt-4 px-2 py-1 bg-red-500 text-white rounded-t-lg hover:bg-red-700">
+                className="  px-2 md:py-1 bg-red-500 text-white rounded-t-lg hover:bg-red-700">
                 Close
                 </button>
               </div>
@@ -465,16 +465,16 @@ const App: React.FC = () => {
         </div>
 
         <div className="mb-8">
+        
           {isLoadingRecommendations ? (
             <div>
-              <h2 className="text-xl font-bold mb-4 text-center">Recommended for You</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <RecipeSkeleton cards={6} />
               </div>
             </div>
           ) : recommendations.length > 0 && (
             <>
-              <h2 className="text-xl font-bold mb-4 text-center">Recommended for You</h2>
+            <h2 className="text-xl font-bold mb-4 text-center">You might like</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {recommendations.map((meal) => (
                   <RecipeCard
