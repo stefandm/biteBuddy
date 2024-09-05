@@ -307,7 +307,7 @@ const App: React.FC = () => {
             {/* <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" /> */}
             <button
               onClick={handleSignOut}
-              className="p-1 px-2 border-b border-r border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-lg"
+              className="p-1 px-2  text-red-500 hover:bg-red-500 hover:text-white rounded-lg shadow-[1px_1px_2px_1px_#f56565]"
             >
               Sign Out
             </button>
@@ -330,20 +330,20 @@ const App: React.FC = () => {
             <h2 className="text-xl font-bold my-4 text-center">My Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
-                <li key={recipe.id} className="sm:flex md:flex-col flex  rounded-lg lg:flex-row mb-2">
+                <li key={recipe.id} className="sm:flex md:flex-col flex  rounded-lg lg:flex-row mb-2  shadow-[1px_1px_1px_1px_#f6ad55]">
                   <button
                     onClick={() => handleSelectRecipe(recipe)}
-                    className={`border-b border-r border-orange-400 w-full  text-left py-1 px-2 rounded-lg hover:bg-orange-400 hover:text-white md:text-center lg:text-left ${
+                    className={` w-full  text-left py-1 px-2 rounded-l-lg hover:bg-orange-400 hover:text-white md:text-center lg:text-left  ${
                       selectedRecipeId === recipe.id
                          ? 'bg-orange-400 text-white '
-                        : 'bg-white '
+                        : 'bg-white text-orange-950'
                     }`}
                   >
                     {recipe.meal.strMeal}
                   </button>
                   <button
                     onClick={() => handleDeleteRecipe(recipe.id)}
-                    className="rounded-lg py-1 px-2  border-b border-r border-red-400 hover:text-white hover:bg-red-500"
+                    className="rounded-r-lg py-1 px-2   text-red-500 hover:text-white hover:bg-red-500"
                   >
                     Delete
                   </button>
@@ -355,7 +355,7 @@ const App: React.FC = () => {
       </div>
       <div className="flex-1 p-4 overflow-auto">
         <div className="relative mb-8 w-full md:max-w-md">
-          <div className="flex flex-col ">
+          <div className="flex flex-col">
             <div className="flex ">
               <input
                 type="text"
