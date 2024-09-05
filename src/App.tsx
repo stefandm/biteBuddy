@@ -261,9 +261,9 @@ const App: React.FC = () => {
     } else {
       generateRecommendations(updatedRecipes);
     }
-
     setSelectedRecipeId(null);
     setSelectedMeal(null);
+    setExpandedMealId(null)
   };
 
   const handleSelectRecipe = (recipe: Recipe) => {
