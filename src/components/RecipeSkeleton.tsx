@@ -7,10 +7,9 @@ interface RecipeSkeletonProps {
 const RecipeSkeleton:React.FC<RecipeSkeletonProps>  = ({cards}) => {
   return (
     Array(cards).fill(0).map((_item,index) =>(
-        <div key={index} className='flex flex-col gap-3 shadow-lg ' >
-        <Skeleton height={250}  />
-        <Skeleton height={20}  />
-        <Skeleton height={30} />
+        <div key={index} className='flex flex-col gap-3 shadow-lg rounded-lg' >
+        <Skeleton height={280} />
+        <Skeleton height={40}/>
         </div>
     ))
    

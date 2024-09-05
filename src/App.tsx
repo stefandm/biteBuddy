@@ -296,29 +296,29 @@ const App: React.FC = () => {
 
   return (
     <>
-    <div className="flex flex-col md:flex-row min-h-screen">
-      <div className="bg-white border-b md:border-r border-gray-500 p-4 overflow-auto
-        md:sticky md:top-0 md:h-screen md:w-[20vw]
+    <div className="flex flex-col md:flex-row min-h-screen bg-white">
+      <div className="bg-white  border-b md:border-r border-orange-800 p-4 overflow-auto
+        md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[15vw]
         relative flex-shrink-0"
       >
         {user ? (
-          <div className='flex flex-col items-center gap-4'>
-            <h1 className='text-4xl text-center'>Welcome, {user.displayName}</h1>
+          <div className='flex flex-col items-center gap-4 '>
+            <h1 className='text-4xl text-center font-bold'>Welcome, {user.displayName}</h1>
             {/* <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" /> */}
             <button
               onClick={handleSignOut}
-              className="p-1 bg-red-400 text-white rounded"
+              className="p-1 px-2 border-b border-r border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-lg"
             >
               Sign Out
             </button>
           </div>
         ) : (
           <div className='flex-col flex items-center gap-4 mt-3'>
-            <h1 className='text-4xl text-center'>Welcome to Bite Buddy</h1>
-            <h1>Sign in to save your recipe</h1>
+            <h1 className='text-4xl text-center font-bold'>Welcome to Bite Buddy</h1>
+            <h1 className='my-4'>Sign in to save your recipe</h1>
             <button
               onClick={handleSignIn}
-              className="mt-4 p-2 bg-orange-400 text-white rounded"
+              className="p-2 text-blue-400  rounded border-b border-r border-blue-400 hover:text-white hover:bg-blue-400"
             >
               Sign In with Google
             </button>
@@ -327,23 +327,23 @@ const App: React.FC = () => {
 
         {userRecipes.length > 0 && (
           <>
-            <h2 className="text-xl font-bold mb-4 text-center">My Saved Recipes</h2>
+            <h2 className="text-xl font-bold my-4 text-center">My Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
                 <li key={recipe.id} className="sm:flex md:flex-col flex  rounded-lg lg:flex-row mb-2">
                   <button
                     onClick={() => handleSelectRecipe(recipe)}
-                    className={`w-full text-left py-1 px-2 rounded-lg hover:shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] md:text-center lg:text-left ${
+                    className={`border-b border-r border-orange-400 w-full  text-left py-1 px-2 rounded-lg hover:bg-orange-400 hover:text-white md:text-center lg:text-left ${
                       selectedRecipeId === recipe.id
-                         ? 'bg-orange-400 text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_1px_4px_-1px]'
-                        : 'bg-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_1px_4px_-1px]'
+                         ? 'bg-orange-400 text-white '
+                        : 'bg-white '
                     }`}
                   >
                     {recipe.meal.strMeal}
                   </button>
                   <button
                     onClick={() => handleDeleteRecipe(recipe.id)}
-                    className="rounded-lg py-1 px-2 shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_1px_4px_-1px] hover:shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]  "
+                    className="rounded-lg py-1 px-2  border-b border-r border-red-400 hover:text-white hover:bg-red-500"
                   >
                     Delete
                   </button>
@@ -378,7 +378,7 @@ const App: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center mt-2">
+            <div className="flex items-center mt-2 justify-center">
               <input
                 type="checkbox"
                 id="recipe"
@@ -428,10 +428,10 @@ const App: React.FC = () => {
               buttonText="Add to My Recipes"
               isExpanded={true}
               />
-              <div className='flex justify-center pt-4 absolute bottom-0 right-[3vw]'>
+              <div className='flex justify-center pt-4 absolute bottom-0 right-0'>
                 <button
                 onClick={handleCloseRecipe}
-                className="  px-2 md:py-1 bg-red-500 text-white rounded-t-lg hover:bg-red-700">
+                className="  px-2 md:py-2  bg-red-500 text-white rounded-tl-lg rounded-br-lg hover:bg-red-700">
                 Close
                 </button>
               </div>
@@ -468,13 +468,14 @@ const App: React.FC = () => {
         
           {isLoadingRecommendations ? (
             <div>
+              <h2 className="text-xl font-bold mb-4 text-center">You might like</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <RecipeSkeleton cards={6} />
               </div>
             </div>
           ) : recommendations.length > 0 && (
             <>
-            <h2 className="text-xl font-bold mb-4 text-center">You might like</h2>
+              <h2 className="text-xl font-bold mb-4 text-center">You might like</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {recommendations.map((meal) => (
                   <RecipeCard

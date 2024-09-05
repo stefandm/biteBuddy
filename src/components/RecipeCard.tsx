@@ -24,7 +24,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
     : 'No instructions available.';
 
   return (
-    <div className=" rounded-lg flex flex-col shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
+    <div className=" rounded-lg flex flex-col border-b-2 border-orange-400">
       <div className="flex flex-col justify-between h-full items-center ">
         {isExpanded && (
           <div className="flex flex-col items-center">
@@ -36,7 +36,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
                 width={0}
                 height={0}
                 sizes="100"
-                className="w-auto object-cover h-[40vh]  md:h-auto md:w-[40vw] lg:max-h-[50vh] lg:max-w-[60vw] rounded-lg border-4 border-teal-100"
+                className="w-auto object-cover h-[40vh]  md:h-auto md:w-[40vw] lg:max-h-[50vh] lg:max-w-[60vw] rounded-lg border-4 border-orange-100"
               />
               <div className="flex flex-col justify-evenly items-center">
                 <h3 className="text-lg font-semibold mb-2">Ingredients:</h3>
@@ -66,19 +66,18 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
               width={0}
               height={0}
               sizes="100"
-              className="w-full h-fit object-cover rounded-t-lg border-b border-teal-200"
+              className="w-full h-fit object-cover rounded-t-lg "
             />
-            <div className='flex justify-center h-full items-center p-2'>
-            <h2 className="text-base font-medium text-center">{meal.strMeal}</h2>
-            </div>
           </div>
         )}
+        <div className='w-full h-full flex justify-center align-middle'>
         <button
           onClick={() => onClick(meal.idMeal)} // Pass the meal ID when the button is clicked
-          className="md:py-2 w-[80%] md:w-[70%] bg-orange-400 hover:bg-orange-600 text-white rounded-t-lg"
+          className="md:p-2 w-full px-1 rounded-b-lg text-orange-800 hover:bg-orange-400 hover:text-white bg-white"
         >
-          {buttonText}
+          {isExpanded ? buttonText :  meal.strMeal}
         </button>
+        </div>
       </div>
     </div>
   );

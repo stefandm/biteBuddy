@@ -1,5 +1,5 @@
 import { ApiResponse } from '../types';
-import { Timestamp } from '@firebase/firestore';
+// import { Timestamp } from '@firebase/firestore';
 import pluralize from 'pluralize';
 
 const API_BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
@@ -19,7 +19,7 @@ export const searchMeals = async (query: string, isIngredientSearch = false): Pr
   try {
     const response = await fetch(`https://www.themealdb.com/api/json/v1/1/${isIngredientSearch ? 'filter' : 'search'}.php?${isIngredientSearch ? 'i' : 's'}=${query}`);
     const data: ApiResponse = await response.json();
-    console.log(Timestamp.now())
+    // console.log(Timestamp.now())
     // Handle cases where 'meals' is null or empty
     return {
       meals: Array.isArray(data.meals) ? data.meals : []
@@ -37,7 +37,7 @@ export const getMealDetails = async (id: string) => {
     if (!response.ok) throw new Error('Failed to fetch meal details');
     const data = await response.json();
     return data.meals ? data.meals[0] : null;
-    console.log(Timestamp.now())
+    // console.log(Timestamp.now())
   } catch (error) {
     console.error('Error fetching meal details:', error);
     return null;
