@@ -28,7 +28,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
       <div className="flex flex-col justify-between h-full items-center ">
         {isExpanded && (
           <div className="flex flex-col items-center">
-            <h2 className="text-xl font-semibold text-center my-4">{meal.strMeal}</h2>
+            <h2 className="text-3xl font-semibold text-center my-10">{meal.strMeal}</h2>
             <div className="flex-col flex md:flex-row justify-evenly w-full ">
               <img
                 src={meal.strMealThumb}
@@ -36,9 +36,9 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
                 width={0}
                 height={0}
                 sizes="100"
-                className="w-auto object-cover h-[40vh]  md:h-auto md:w-[40vw] lg:max-h-[50vh] lg:max-w-[60vw] rounded-lg border-4 border-orange-100"
+                className="w-auto object-cover h-[40vh]  md:h-auto md:w-[40vw] lg:max-h-[50vh] lg:max-w-[60vw] rounded-lg border-2 border-orange-100"
               />
-              <div className="flex flex-col justify-evenly items-center">
+              <div className="flex flex-col justify-evenly items-center mt-6 font-secondary">
                 <h3 className="text-lg font-semibold mb-2">Ingredients:</h3>
                 <ul className="pl-5 mb-4">
                   {ingredients.length > 0 ? (
@@ -52,8 +52,8 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
               </div>
             </div>
 
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2 text-center">Instructions:</h3>
+            <div className="p-14 font-secondary">
+              <h3 className="text-lg font-semibold mb-2 text-center pb-6">Instructions:</h3>
               <p>{instructions}</p>
             </div>
           </div>
@@ -73,7 +73,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
         <div className='w-full h-full flex justify-center align-middle'>
         <button
           onClick={() => onClick(meal.idMeal)} // Pass the meal ID when the button is clicked
-          className="md:p-2 w-full px-1 rounded-b-lg text-orange-800 hover:bg-orange-400 hover:text-white bg-white"
+          className="md:py-2 py-1 w-full px-2 rounded-b-lg text-orange-950 font-display md:text-lg hover:bg-orange-400 hover:text-white bg-orange-50"
         >
           {isExpanded ? buttonText :  meal.strMeal}
         </button>

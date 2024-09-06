@@ -82,7 +82,7 @@ const App: React.FC = () => {
       const recommendedMeals: Meal[] = [];
   
       // Iterate over unique ingredients and fetch meals
-      for (const ingredient of uniqueIngredients.slice(0, 10)) {
+      for (const ingredient of uniqueIngredients.slice(0, 7)) {
         try {
           const response: ApiResponse = await searchMeals(ingredient);
   
@@ -296,18 +296,18 @@ const App: React.FC = () => {
 
   return (
     <>
-    <div className="flex flex-col md:flex-row min-h-screen bg-white">
-      <div className="bg-white  border-b md:border-r border-orange-800 p-4 overflow-auto
+    <div className="flex flex-col font-body font-main md:flex-row min-h-screen bg-white">
+      <div className="  border-b md:border-r border-orange-800 p-4 overflow-auto
         md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[15vw]
         relative flex-shrink-0"
       >
         {user ? (
           <div className='flex flex-col items-center gap-4 '>
-            <h1 className='text-4xl text-center font-bold'>Welcome, {user.displayName}</h1>
+            <h1 className='text-2xl text-center font-bold'>Welcome, {user.displayName}</h1>
             {/* <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" /> */}
             <button
               onClick={handleSignOut}
-              className="p-1 px-2  text-red-500 hover:bg-red-500 hover:text-white rounded-lg shadow-[1px_1px_2px_1px_#f56565]"
+              className="px-2 py-1 font-secondary text-red-500 hover:bg-red-500 hover:text-white rounded shadow-[1px_1px_2px_1px_#f56565]"
             >
               Sign Out
             </button>
@@ -318,7 +318,7 @@ const App: React.FC = () => {
             <h1 className='my-4'>Sign in to save your recipe</h1>
             <button
               onClick={handleSignIn}
-              className="p-2 text-blue-400  rounded border-b border-r border-blue-400 hover:text-white hover:bg-blue-400"
+              className="p-2 font-secondary text-blue-400  rounded border border-blue-400 hover:text-white hover:bg-blue-400"
             >
               Sign In with Google
             </button>
@@ -327,10 +327,10 @@ const App: React.FC = () => {
 
         {userRecipes.length > 0 && (
           <>
-            <h2 className="text-xl font-bold my-4 text-center">My Saved Recipes</h2>
+            <h2 className="text-2xl font-bold my-4 text-center">Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
-                <li key={recipe.id} className="sm:flex md:flex-col flex  rounded-lg lg:flex-row mb-2  shadow-[1px_1px_1px_1px_#f6ad55]">
+                <li key={recipe.id} className="sm:flex md:flex-col font-secondary flex rounded-lg lg:flex-row mb-3  shadow-[1px_1px_1px_1px_#f6ad55]">
                   <button
                     onClick={() => handleSelectRecipe(recipe)}
                     className={` w-full  text-left py-1 px-2 rounded-l-lg hover:bg-orange-400 hover:text-white md:text-center lg:text-left  ${
@@ -343,9 +343,9 @@ const App: React.FC = () => {
                   </button>
                   <button
                     onClick={() => handleDeleteRecipe(recipe.id)}
-                    className="rounded-r-lg py-1 px-2   text-red-500 hover:text-white hover:bg-red-500"
+                    className="rounded-r-lg py-1 px-2 border-l-[1px] border-orange-400 text-red-950 hover:text-white hover:bg-red-400"
                   >
-                    Delete
+                    X
                   </button>
                 </li>
               ))}
@@ -356,14 +356,14 @@ const App: React.FC = () => {
       <div className="flex-1 p-4 overflow-auto">
         <div className="relative mb-8 w-full md:max-w-md">
           <div className="flex flex-col">
-            <div className="flex ">
+            <div className="flex font-secondary">
               <input
                 type="text"
                 placeholder="Search for a meal"
                 value={query}
                 onChange={handleInputChange}
                 onKeyDown={handleSearchKeyDown}
-                className="p-2 border  border-gray-400  flex-1 rounded-l-lg focus:outline-none"
+                className="px-2 py-1 border  border-gray-400  flex-1 rounded-l-lg focus:outline-none"
               />
               <button
                 onClick={() => {
@@ -372,7 +372,7 @@ const App: React.FC = () => {
                   setSelectedMeal(null);
                   setSelectedRecipeId(null);
                 }}
-                className="p-2 bg-orange-500 text-white hover:bg-orange-700 rounded-r-lg"
+                className="px-2 py-1 bg-orange-500 text-white hover:bg-orange-700 rounded-r-lg"
               >
                 Search
               </button>
@@ -431,7 +431,7 @@ const App: React.FC = () => {
               <div className='flex justify-center pt-4 absolute bottom-0 right-0'>
                 <button
                 onClick={handleCloseRecipe}
-                className="  px-2 md:py-2  bg-red-500 text-white rounded-tl-lg rounded-br-lg hover:bg-red-700">
+                className="  px-3 md:py-1  bg-red-400 text-xl text-white rounded-tl-lg rounded-br-lg hover:bg-red-800 ">
                 Close
                 </button>
               </div>
@@ -439,14 +439,14 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <div className="mb-8">
+        <div className="">
           {isLoadingSearchResults ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               <RecipeSkeleton cards={8}/>
             </div>
           ) : searchResults.length > 0 ? (
             <>
-              <h2 className="text-xl font-bold mb-4 text-center">Search Results</h2>
+              <h2 className="text-3xl font-bold mb-[5vh] text-center">Search Results</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {searchResults.map((meal) => (
                   <RecipeCard
@@ -468,14 +468,14 @@ const App: React.FC = () => {
         
           {isLoadingRecommendations ? (
             <div>
-              <h2 className="text-xl font-bold mb-4 text-center">You might like</h2>
+              <h2 className="text-3xl text-orange-700 font-extrabold mt-[7vh] mb-[3vh] text-center">You might also like</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <RecipeSkeleton cards={6} />
               </div>
             </div>
           ) : recommendations.length > 0 && (
             <>
-              <h2 className="text-xl font-bold mb-4 text-center">You might like</h2>
+              <h2 className="text-3xl text-orange-700 font-extrabold mt-[7vh]  mb-[3vh] text-center">You might also like</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {recommendations.map((meal) => (
                   <RecipeCard
