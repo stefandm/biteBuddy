@@ -8,6 +8,8 @@ import RecipeCard from './components/RecipeCard';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { Meal, Recipe, User, INGREDIENT_KEYS, IngredientKey, ApiResponse } from './types';
 import RecipeSkeleton from './components/RecipeSkeleton';
+import logoIMG from '../public/images/LOGO2.jpg'
+
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -296,15 +298,16 @@ const App: React.FC = () => {
 
   return (
     <>
-    <div className="flex flex-col font-body font-main md:flex-row min-h-screen bg-white">
-      <div className="  border-b md:border-r border-orange-800 p-4 overflow-auto
-        md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[15vw]
+    <div className="flex flex-col font-body font-main md:flex-row min-h-screen "  >
+      <div className=" border-b md:border-r border-orange-800 p-4 overflow-auto
+        md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[14vw]
         relative flex-shrink-0"
       >
+        
+        <img className='hidden md:block h-auto w-auto object-cover mb-12 scale-[80%] ' src={logoIMG} alt="" />
         {user ? (
           <div className='flex flex-col items-center gap-4 '>
-            <h1 className='text-2xl text-center font-bold'>Welcome, {user.displayName}</h1>
-            {/* <img className='h-[30px] w-[30px] rounded-[50%]' src={user.photoURL || ""} alt="" /> */}
+            <h1 className='text-3xl text-orange-400 text-center font-bold'>Welcome, {user.displayName}</h1>
             <button
               onClick={handleSignOut}
               className="px-2 py-1 font-secondary text-red-500 hover:bg-red-500 hover:text-white rounded shadow-[1px_1px_2px_1px_#f56565]"
@@ -313,9 +316,9 @@ const App: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className='flex-col flex items-center gap-4 mt-3'>
-            <h1 className='text-4xl text-center font-bold'>Welcome to Bite Buddy</h1>
-            <h1 className='my-4'>Sign in to save your recipe</h1>
+          <div className='flex-col flex items-center mt-3'>
+            {/* <h1 className='text-3xl text-center font-bold mb-4'>Welcome to Bite Buddy</h1> */}
+            <h1 className='my-4 text-lg font-secondary text-center'>Sign in to save your recipes</h1>
             <button
               onClick={handleSignIn}
               className="p-2 font-secondary text-blue-400  rounded border border-blue-400 hover:text-white hover:bg-blue-400"
@@ -325,15 +328,15 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {userRecipes.length > 0 && (
+        {userRecipes.length > 0  && (
           <>
-            <h2 className="text-2xl font-bold my-4 text-center">Saved Recipes</h2>
+            <h2 className="text-2xl font-bold mt-14 mb-4 text-center">Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
                 <li key={recipe.id} className="sm:flex md:flex-col font-secondary flex rounded-lg lg:flex-row mb-3  shadow-[1px_1px_1px_1px_#f6ad55]">
                   <button
                     onClick={() => handleSelectRecipe(recipe)}
-                    className={` w-full  text-left py-1 px-2 rounded-l-lg hover:bg-orange-400 hover:text-white md:text-center lg:text-left  ${
+                    className={` w-full  text-left py-[3px] px-2 rounded-l-lg hover:bg-orange-400 hover:text-white md:text-center lg:text-left  ${
                       selectedRecipeId === recipe.id
                          ? 'bg-orange-400 text-white '
                         : 'bg-white text-orange-950'
@@ -353,9 +356,9 @@ const App: React.FC = () => {
           </>
         )}
       </div>
-      <div className="flex-1 p-4 overflow-auto">
-        <div className="relative mb-8 w-full md:max-w-md">
-          <div className="flex flex-col">
+      <div className="flex-1 p-4 overflow-auto ">
+        <div className="relative mb-8 w-full  md:max-w-md">
+          <div className="mt-6 flex flex-col ">
             <div className="flex font-secondary">
               <input
                 type="text"
@@ -408,7 +411,7 @@ const App: React.FC = () => {
                 <li
                   key={suggestion.idMeal}
                   onClick={() => handleSelectMeal(suggestion.idMeal)}
-                  className={`p-2 cursor-pointer hover:bg-gray-200 ${
+                  className={`p-2 cursor-pointer font-secondary  hover:bg-gray-200 ${
                     index === highlightedIndex ? 'bg-gray-300' : ''
                   }`}
                 >
@@ -439,14 +442,13 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <div className="">
           {isLoadingSearchResults ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               <RecipeSkeleton cards={8}/>
             </div>
           ) : searchResults.length > 0 ? (
             <>
-              <h2 className="text-3xl font-bold mb-[5vh] text-center">Search Results</h2>
+              <h2 className="text-3xl font-bold mb-[5vh] text-center text-orange-700">Search Results</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {searchResults.map((meal) => (
                   <RecipeCard
@@ -460,22 +462,21 @@ const App: React.FC = () => {
               </div>
             </>
           ) : (
-            <p></p>
+            <div className='flex justify-center '>
+              <h1>Cool layout goes here</h1>
+            </div>
           )}
-        </div>
 
-        <div className="mb-8">
-        
           {isLoadingRecommendations ? (
-            <div>
-              <h2 className="text-3xl text-orange-700 font-extrabold mt-[7vh] mb-[3vh] text-center">You might also like</h2>
+            <div className="mb-8">
+              <h2 className="text-3xl text-orange-700 font-extrabold mt-[7vh] mb-[3vh] text-center">Based on your taste</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <RecipeSkeleton cards={6} />
               </div>
             </div>
           ) : recommendations.length > 0 && (
             <>
-              <h2 className="text-3xl text-orange-700 font-extrabold mt-[7vh]  mb-[3vh] text-center">You might also like</h2>
+              <h2 className="text-3xl text-orange-700 font-extrabold mt-[7vh]  mb-[3vh] text-center">Based on your taste</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {recommendations.map((meal) => (
                   <RecipeCard
@@ -489,7 +490,6 @@ const App: React.FC = () => {
               </div>
             </>
           )}
-        </div>
       </div>
     </div>
   </>
