@@ -8,7 +8,7 @@ import RecipeCard from './components/RecipeCard';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { Meal, Recipe, User, INGREDIENT_KEYS, IngredientKey, ApiResponse } from './types';
 import RecipeSkeleton from './components/RecipeSkeleton';
-import logoIMG from '../public/images/LOGO2.jpg'
+import logoIMG from '../public/images/logoAndName.jpg'
 
 
 const App: React.FC = () => {
@@ -318,7 +318,7 @@ const App: React.FC = () => {
         ) : (
           <div className='flex-col flex items-center mt-3'>
             {/* <h1 className='text-3xl text-center font-bold mb-4'>Welcome to Bite Buddy</h1> */}
-            <h1 className='my-4 text-lg font-secondary text-center'>Sign in to save your recipes</h1>
+            <h1 className='my-4 text-lg font-secondary text-center'>Sign in to view saved recipes</h1>
             <button
               onClick={handleSignIn}
               className="p-2 font-secondary text-blue-400  rounded border border-blue-400 hover:text-white hover:bg-blue-400"
