@@ -36,27 +36,7 @@ const App: React.FC = () => {
   });
 
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      if (user) {
-        const unsubscribeRecipes = listenToUserRecipes(user.uid, (recipes) => {
-          setUserRecipes(recipes);
-          generateRecommendations(recipes);
-          setSelectedRecipeId(null);
-          setSelectedMeal(null);
-        });
-        return () => unsubscribeRecipes();
-      } else {
-        setUserRecipes([]);
-        setSearchResults([]);
-        setSelectedMeal(null);
-        setRecommendations([]);
-        setSelectedRecipeId(null);
-      }
-    });
-    return () => unsubscribe();
-  }, [user]);
+ 
 
   useEffect(() => {
     if (selectedRecipeId) {
@@ -84,14 +64,13 @@ const App: React.FC = () => {
       const uniqueIngredients = [...new Set(ingredients)];
       const recommendedMeals: Meal[] = [];
   
-      // Iterate over unique ingredients and fetch meals
-      for (const ingredient of uniqueIngredients.slice(0, 7)) {
+      for (const ingredient of uniqueIngredients.slice(0, 5)) {
         try {
           const response: ApiResponse = await searchMeals(ingredient);
-   
+  
           if (response.meals) {
             const filteredResults = response.meals.filter(
-              (meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
+              (meal) => !recipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
             );
   
             recommendedMeals.push(...filteredResults);
@@ -101,28 +80,49 @@ const App: React.FC = () => {
         }
       }
   
-      // Remove duplicates from recommendations
       const uniqueMeals = Array.from(
         new Map(recommendedMeals.map((meal) => [meal.idMeal, meal])).values()
       );
   
-      // Ensure recommendations are updated correctly
       const filteredRecommendations = uniqueMeals.filter(
-        (meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
+        (meal) => !recipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
       );
   
-      console.log('User Recipes:', userRecipes.map(recipe => recipe.meal.idMeal));
-      console.log('Unique Meals:', uniqueMeals.map(meal => meal.idMeal));
-      console.log('Filtered Recommendations:', filteredRecommendations.map(meal => meal.idMeal));
-  
-      setRecommendations(filteredRecommendations)
+      setRecommendations(filteredRecommendations);
       setIsLoadingRecommendations(false);
     }
-  }, [userRecipes]);
+  }, []);
+  
   
   useEffect(() => {
-    generateRecommendations(userRecipes);
-  }, [userRecipes, generateRecommendations]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+  
+      if (user) {
+        const unsubscribeRecipes = listenToUserRecipes(user.uid, (recipes) => {
+          // Update the recipes only if they have changed
+          if (JSON.stringify(recipes) !== JSON.stringify(userRecipes)) {
+            setUserRecipes(recipes);
+            generateRecommendations(recipes);  // Trigger recommendations generation here
+          }
+  
+          setSelectedRecipeId(null);
+          setSelectedMeal(null);
+        });
+  
+        return () => unsubscribeRecipes();
+      } else {
+        setUserRecipes([]);
+        setSearchResults([]);
+        setSelectedMeal(null);
+        setRecommendations([]);
+        setSelectedRecipeId(null);
+      }
+    });
+  
+    return () => unsubscribe();
+  }, [generateRecommendations, userRecipes]);  // Only depend on generateRecommendations
+  
  
   const handleSearch = async () => {
     if (query.trim() === '') {
@@ -184,7 +184,7 @@ const App: React.FC = () => {
     if (query.length > 2) {
       const response = await searchMeals(query);
       const results = response.meals || [];
-      setSuggestions(results.slice(0, 7));
+      setSuggestions(results.slice(0, 5));
     } else {
       setSuggestions([]);
     }
@@ -224,22 +224,22 @@ const App: React.FC = () => {
 
 
  
-  const handleAddRecipe = async () => {
+  const handleAddRecipe = useCallback(async () => {
     if (!user) {
       alert('You must be logged in to add a recipe.');
       return;
     }
-
+  
     if (selectedMeal) {
       const recipeExists = userRecipes.some(
         (recipe) => recipe.meal.idMeal === selectedMeal?.idMeal
       );
-
+  
       if (recipeExists) {
         alert('This recipe is already saved.');
         return;
       }
-
+  
       await addRecipe(user.uid, selectedMeal);
       setSearchResults((prevResults) =>
         prevResults.filter((meal) => meal.idMeal !== selectedMeal.idMeal)
@@ -247,28 +247,45 @@ const App: React.FC = () => {
       setSuggestions((prevSuggestions) =>
         prevSuggestions.filter((meal) => meal.idMeal !== selectedMeal.idMeal)
       );
+  
       setSelectedMeal(null);
+  
+      // Call generateRecommendations with updated userRecipes
+      generateRecommendations([...userRecipes, { id: '', meal: selectedMeal }]);
     }
-  };
-
+  }, [user, selectedMeal, userRecipes, generateRecommendations]);
+  
+  
+  const debouncedhandleAddRecipe = useMemo(
+    () => _debounce(handleAddRecipe, 1000),  // Debounce delay set to 1000ms
+    [handleAddRecipe]  // Only recreated when handleDeleteRecipe changes
+  );
+  
+    
+  // Cleanup the debounced function to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      debouncedhandleAddRecipe.cancel();  // Cleanup debounce on unmount
+    };
+  }, [debouncedhandleAddRecipe]);
  
-
-
-const handleDeleteRecipe = useCallback(async (recipeId: string) => {
-  await deleteRecipe(recipeId);
-  const updatedRecipes = userRecipes.filter((recipe) => recipe.id !== recipeId);
-  setUserRecipes(updatedRecipes);
-
-  if (updatedRecipes.length === 0) {
-    setRecommendations([]);
-  } else {
-    generateRecommendations(updatedRecipes)
-  }
-
-  setSelectedRecipeId(null);
-  setSelectedMeal(null);
-  setExpandedMealId(null);
-}, [userRecipes, generateRecommendations]);
+  const handleDeleteRecipe = useCallback(async (recipeId: string) => {
+    await deleteRecipe(recipeId);
+    const updatedRecipes = userRecipes.filter((recipe) => recipe.id !== recipeId);
+    setUserRecipes(updatedRecipes);
+  
+    if (updatedRecipes.length === 0) {
+      setRecommendations([]);
+    } else {
+      // Call generateRecommendations with the updated recipes
+      generateRecommendations(updatedRecipes);
+    }
+  
+    setSelectedRecipeId(null);
+    setSelectedMeal(null);
+    setExpandedMealId(null);
+  }, [userRecipes, generateRecommendations]);
+  
   
 
 const debouncedHandleDeleteRecipe = useMemo(
@@ -276,13 +293,13 @@ const debouncedHandleDeleteRecipe = useMemo(
   [handleDeleteRecipe]  // Only recreated when handleDeleteRecipe changes
 );
 
-
-  // Cleanup the debounced function to avoid memory leaks
-  useEffect(() => {
-    return () => {
-      debouncedHandleDeleteRecipe.cancel();  // Cleanup debounce on unmount
-    };
-  }, [debouncedHandleDeleteRecipe]);
+  
+    // Cleanup the debounced function to avoid memory leaks
+    useEffect(() => {
+      return () => {
+        debouncedHandleDeleteRecipe.cancel();  // Cleanup debounce on unmount
+      };
+    }, [debouncedHandleDeleteRecipe]);
   
   
   const handleSelectRecipe = (recipe: Recipe) => {
