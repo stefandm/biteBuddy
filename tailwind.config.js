@@ -4,7 +4,7 @@ export default {
   theme: {
     fontFamily: {
       main: ["Lobster", "sans-serif"],
-      secondary: ["Fjalla One", "serif"],
+      secondary: ["Asap", "sans-serif"],
     },
     extend: {},
   },

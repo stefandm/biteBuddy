@@ -73,7 +73,7 @@ const RecipeCard: React.FC<CardProps> = ({ meal, onClick, buttonText, isExpanded
         <div className='w-full h-full flex justify-center align-middle'>
         <button
           onClick={() => onClick(meal.idMeal)} // Pass the meal ID when the button is clicked
-          className="md:py-2 py-1 w-full px-2 rounded-b-lg text-orange-950 font-display md:text-lg hover:bg-orange-400 hover:text-white bg-orange-50"
+          className="md:py-2 py-1 w-full px-2 rounded-b-lg text-orange-950 md:text-xl hover:bg-orange-400 hover:text-white bg-orange-50"
         >
           {isExpanded ? buttonText :  meal.strMeal}
         </button>

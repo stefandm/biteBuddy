@@ -8,7 +8,7 @@ import RecipeCard from './components/RecipeCard';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { Meal, Recipe, User, INGREDIENT_KEYS, IngredientKey, ApiResponse } from './types';
 import RecipeSkeleton from './components/RecipeSkeleton';
-import logoIMG from '../public/images/logoAndName.jpg'
+import logoIMG from '/images/logoAndName.jpg'
 
 
 const App: React.FC = () => {
@@ -87,7 +87,7 @@ const App: React.FC = () => {
       for (const ingredient of uniqueIngredients.slice(0, 7)) {
         try {
           const response: ApiResponse = await searchMeals(ingredient);
-  
+   
           if (response.meals) {
             const filteredResults = response.meals.filter(
               (meal) => !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
@@ -114,7 +114,7 @@ const App: React.FC = () => {
       console.log('Unique Meals:', uniqueMeals.map(meal => meal.idMeal));
       console.log('Filtered Recommendations:', filteredRecommendations.map(meal => meal.idMeal));
   
-      setRecommendations(filteredRecommendations);
+      setRecommendations(filteredRecommendations)
       setIsLoadingRecommendations(false);
     }
   }, [userRecipes]);
@@ -261,7 +261,7 @@ const App: React.FC = () => {
     if (updatedRecipes.length === 0) {
       setRecommendations([]);
     } else {
-      generateRecommendations(updatedRecipes);
+      generateRecommendations(updatedRecipes)
     }
     setSelectedRecipeId(null);
     setSelectedMeal(null);
@@ -299,15 +299,15 @@ const App: React.FC = () => {
   return (
     <>
     <div className="flex flex-col font-body font-main md:flex-row min-h-screen "  >
+
       <div className=" border-b md:border-r border-orange-800 p-4 overflow-auto
         md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[14vw]
         relative flex-shrink-0"
       >
-        
-        <img className='hidden md:block h-auto w-auto object-cover mb-12 scale-[80%] ' src={logoIMG} alt="" />
+        <img className='hidden md:block h-auto w-auto object-cover mb-8 scale-[80%] ' src={logoIMG} alt="" />
         {user ? (
           <div className='flex flex-col items-center gap-4 '>
-            <h1 className='text-3xl text-orange-400 text-center font-bold'>Welcome, {user.displayName}</h1>
+            <h1 className='text-2xl text-orange-400 text-center font-bold'>Welcome, {user.displayName}</h1>
             <button
               onClick={handleSignOut}
               className="px-2 py-1 font-secondary text-red-500 hover:bg-red-500 hover:text-white rounded shadow-[1px_1px_2px_1px_#f56565]"
@@ -333,20 +333,20 @@ const App: React.FC = () => {
             <h2 className="text-2xl font-bold mt-14 mb-4 text-center">Saved Recipes</h2>
             <ul className='md:min-w-full'>
               {userRecipes.map((recipe) => (
-                <li key={recipe.id} className="sm:flex md:flex-col font-secondary flex rounded-lg lg:flex-row mb-3  shadow-[1px_1px_1px_1px_#f6ad55]">
+                <li key={recipe.id} className="sm:flex md:flex-col font-secondary flex rounded-lg lg:flex-row mb-3  shadow-[1px_1px_1px_2px_#f6ad55]">
                   <button
                     onClick={() => handleSelectRecipe(recipe)}
                     className={` w-full  text-left py-[3px] px-2 rounded-l-lg hover:bg-orange-400 hover:text-white md:text-center lg:text-left  ${
                       selectedRecipeId === recipe.id
                          ? 'bg-orange-400 text-white '
-                        : 'bg-white text-orange-950'
+                        : 'bg-white text-orange-900'
                     }`}
                   >
                     {recipe.meal.strMeal}
                   </button>
                   <button
                     onClick={() => handleDeleteRecipe(recipe.id)}
-                    className="rounded-r-lg py-1 px-2 border-l-[1px] border-orange-400 text-red-950 hover:text-white hover:bg-red-400"
+                    className="rounded-r-lg py-1 px-2 border-l-[1px] border-orange-400 text-red-600 hover:text-white hover:bg-red-400"
                   >
                     X
                   </button>
@@ -412,7 +412,7 @@ const App: React.FC = () => {
                   key={suggestion.idMeal}
                   onClick={() => handleSelectMeal(suggestion.idMeal)}
                   className={`p-2 cursor-pointer font-secondary  hover:bg-gray-200 ${
-                    index === highlightedIndex ? 'bg-gray-300' : ''
+                    index === highlightedIndex ? 'bg-orange-100' : ''
                   }`}
                 >
                   {suggestion.strMeal}
@@ -434,7 +434,7 @@ const App: React.FC = () => {
               <div className='flex justify-center pt-4 absolute bottom-0 right-0'>
                 <button
                 onClick={handleCloseRecipe}
-                className="  px-3 md:py-1  bg-red-400 text-xl text-white rounded-tl-lg rounded-br-lg hover:bg-red-800 ">
+                className="  px-3 md:py-1  md:text-xl bg-red-400 text-xl text-white rounded-tl-lg rounded-br-lg hover:bg-red-800 ">
                 Close
                 </button>
               </div>
