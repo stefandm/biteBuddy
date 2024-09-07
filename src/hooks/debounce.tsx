@@ -1,16 +1,13 @@
+type DebouncedFunction<F extends (...args: unknown[]) => void> = (...args: Parameters<F>) => void;
 
-function debounce<F extends (...args: unknown[]) => void>(func: F, delay: number): (...args: Parameters<F>) => void {
-    let timeoutId: ReturnType<typeof setTimeout>;
-  
-    return (...args: Parameters<F>) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func(...args), delay);
-    };
-  }
-  
-  
+export function debounce<F extends (...args: unknown[]) => void>(
+  func: F,
+  waitFor: number
+): DebouncedFunction<F> {
+  let timeout: ReturnType<typeof setTimeout>;
 
-export default debounce
-
-
-
+  return (...args: Parameters<F>): void => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), waitFor);
+  };
+}

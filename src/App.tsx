@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, provider } from './firebase/config';
 import { searchMeals, getMealDetails } from './api/mealapi';
@@ -9,6 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { Meal, Recipe, User, INGREDIENT_KEYS, IngredientKey, ApiResponse } from './types';
 import RecipeSkeleton from './components/RecipeSkeleton';
 import logoIMG from '/images/logoAndName.jpg'
+import _debounce from 'lodash/debounce';
 
 
 const App: React.FC = () => {
@@ -123,8 +124,10 @@ const App: React.FC = () => {
     generateRecommendations(userRecipes);
   }, [userRecipes, generateRecommendations]);
   
-
-  
+  const debouncedGenerateRecommendations = useMemo(
+    () => _debounce(generateRecommendations, 500),
+    [generateRecommendations]
+  );
 
   const handleSearch = async () => {
     if (query.trim() === '') {
@@ -253,6 +256,7 @@ const App: React.FC = () => {
     }
   };
 
+  
   const handleDeleteRecipe = async (recipeId: string) => {
     await deleteRecipe(recipeId);
     const updatedRecipes = userRecipes.filter((recipe) => recipe.id !== recipeId);
@@ -261,12 +265,19 @@ const App: React.FC = () => {
     if (updatedRecipes.length === 0) {
       setRecommendations([]);
     } else {
-      generateRecommendations(updatedRecipes)
+      // generateRecommendations(updatedRecipes)
+      debouncedGenerateRecommendations(updatedRecipes)
     }
     setSelectedRecipeId(null);
     setSelectedMeal(null);
     setExpandedMealId(null)
   };
+
+  useEffect(() => {
+    return () => {
+      debouncedGenerateRecommendations.cancel(); // Cleanup debounce on unmount
+    };
+  }, [debouncedGenerateRecommendations]);
 
   const handleSelectRecipe = (recipe: Recipe) => {
     setSelectedRecipeId(recipe.id);

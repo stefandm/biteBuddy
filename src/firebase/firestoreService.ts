@@ -34,6 +34,7 @@ export const listenToUserRecipes = (userId: string, callback: (recipes: Recipe[]
 };
 
 // Delete a recipe from Firestore
+
 export const deleteRecipe = async (recipeId: string) => {
     try {
         await deleteDoc(doc(db, 'recipes', recipeId));
@@ -42,3 +43,5 @@ export const deleteRecipe = async (recipeId: string) => {
         console.error('Error deleting recipe: ', e);
     }
 };
+
+
