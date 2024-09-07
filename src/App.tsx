@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<'recipe' | 'ingredient'>('recipe');
-  
+
   const scrollToTopRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
@@ -123,12 +123,7 @@ const App: React.FC = () => {
   useEffect(() => {
     generateRecommendations(userRecipes);
   }, [userRecipes, generateRecommendations]);
-  
-  const debouncedGenerateRecommendations = useMemo(
-    () => _debounce(generateRecommendations, 500),
-    [generateRecommendations]
-  );
-
+ 
   const handleSearch = async () => {
     if (query.trim() === '') {
       setSearchResults([]);
@@ -256,29 +251,40 @@ const App: React.FC = () => {
     }
   };
 
+ 
+
+
+const handleDeleteRecipe = useCallback(async (recipeId: string) => {
+  await deleteRecipe(recipeId);
+  const updatedRecipes = userRecipes.filter((recipe) => recipe.id !== recipeId);
+  setUserRecipes(updatedRecipes);
+
+  if (updatedRecipes.length === 0) {
+    setRecommendations([]);
+  } else {
+    generateRecommendations(updatedRecipes)
+  }
+
+  setSelectedRecipeId(null);
+  setSelectedMeal(null);
+  setExpandedMealId(null);
+}, [userRecipes, generateRecommendations]);
   
-  const handleDeleteRecipe = async (recipeId: string) => {
-    await deleteRecipe(recipeId);
-    const updatedRecipes = userRecipes.filter((recipe) => recipe.id !== recipeId);
-    setUserRecipes(updatedRecipes);
 
-    if (updatedRecipes.length === 0) {
-      setRecommendations([]);
-    } else {
-      // generateRecommendations(updatedRecipes)
-      debouncedGenerateRecommendations(updatedRecipes)
-    }
-    setSelectedRecipeId(null);
-    setSelectedMeal(null);
-    setExpandedMealId(null)
-  };
+const debouncedHandleDeleteRecipe = useMemo(
+  () => _debounce(handleDeleteRecipe, 1000),  // Debounce delay set to 1000ms
+  [handleDeleteRecipe]  // Only recreated when handleDeleteRecipe changes
+);
 
+
+  // Cleanup the debounced function to avoid memory leaks
   useEffect(() => {
     return () => {
-      debouncedGenerateRecommendations.cancel(); // Cleanup debounce on unmount
+      debouncedHandleDeleteRecipe.cancel();  // Cleanup debounce on unmount
     };
-  }, [debouncedGenerateRecommendations]);
-
+  }, [debouncedHandleDeleteRecipe]);
+  
+  
   const handleSelectRecipe = (recipe: Recipe) => {
     setSelectedRecipeId(recipe.id);
     setExpandedMealId(recipe.meal.idMeal === expandedMealId ? null : recipe.meal.idMeal);
@@ -356,7 +362,7 @@ const App: React.FC = () => {
                     {recipe.meal.strMeal}
                   </button>
                   <button
-                    onClick={() => handleDeleteRecipe(recipe.id)}
+                    onClick={() => debouncedHandleDeleteRecipe(recipe.id)}
                     className="rounded-r-lg py-1 px-2 border-l-[1px] border-orange-400 text-red-600 hover:text-white hover:bg-red-400"
                   >
                     X
