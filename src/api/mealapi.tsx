@@ -1,57 +1,95 @@
-import { ApiResponse } from '../types';
+// api/mealapi.ts
+
+import { ApiResponse, Meal } from '../types';
 import pluralize from 'pluralize';
 
-// API Base URL
 const API_BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
-
-// Debounce delay (in milliseconds)
-const DEBOUNCE_DELAY = 1000;
-
-// Cache for storing API responses
 const cache = new Map<string, ApiResponse>();
 
-// Debounce function
-const debounce = <T extends (...args: never[]) => void>(func: T, wait: number): T => {
-  let timeout: NodeJS.Timeout;
-  return function(...args: Parameters<T>) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  } as T;
-};
-
-// Normalize ingredient names
 export const normalizeIngredient = (ingredient: string): string => {
   const lowerCaseIngredient = ingredient.toLowerCase();
-  console.log(`Normalizing ingredient: ${lowerCaseIngredient}`); // Debug log
   return pluralize.singular(lowerCaseIngredient);
 };
 
-// Search meals with caching and error handling
-export const searchMeals = async (query: string, isIngredientSearch = false): Promise<ApiResponse> => {
-  const cacheKey = `${isIngredientSearch ? 'i' : 's'}=${query}`;
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey)!;
+export const searchMeals = async (
+  query: string,
+  isIngredientSearch = false
+): Promise<ApiResponse> => {
+  if (!query.trim()) {
+    return { meals: [] };
   }
 
-  try {
-    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/${isIngredientSearch ? 'filter' : 'search'}.php?${isIngredientSearch ? 'i' : 's'}=${query}`);
-    if (response.status === 429) {
-      console.error('Rate limit exceeded. Please try again later.');
+  if (isIngredientSearch) {
+    // Generate singular and plural forms
+    const singularForm = pluralize.singular(query.toLowerCase());
+    const pluralForm = pluralize.plural(query.toLowerCase());
+
+    // console.log(`Searching for ingredients: ${singularForm} and ${pluralForm}`);
+
+    const cacheKey = `i=${singularForm}|${pluralForm}`;
+
+    if (cache.has(cacheKey)) {
+      return cache.get(cacheKey)!;
+    }
+
+    try {
+      // Fetch meals with singular form
+      const responseSingular = await fetch(
+        `${API_BASE_URL}/filter.php?i=${encodeURIComponent(singularForm)}`
+      );
+      const dataSingular: ApiResponse = await responseSingular.json();
+      const mealsSingular = Array.isArray(dataSingular.meals) ? dataSingular.meals : [];
+
+      // Fetch meals with plural form if it's different
+      let mealsPlural: Meal[] = [];
+      if (singularForm !== pluralForm) {
+        const responsePlural = await fetch(
+          `${API_BASE_URL}/filter.php?i=${encodeURIComponent(pluralForm)}`
+        );
+        const dataPlural: ApiResponse = await responsePlural.json();
+        mealsPlural = Array.isArray(dataPlural.meals) ? dataPlural.meals : [];
+      }
+
+      // Combine and remove duplicates
+      const combinedMeals = [...mealsSingular, ...mealsPlural];
+      const uniqueMeals = Array.from(
+        new Map(combinedMeals.map((meal) => [meal.idMeal, meal])).values()
+      );
+
+      const result: ApiResponse = {
+        meals: uniqueMeals,
+      };
+
+      cache.set(cacheKey, result);
+      return result;
+    } catch (error) {
+      console.error('Error fetching meals:', error);
       return { meals: [] };
     }
-    const data: ApiResponse = await response.json();
-    const result: ApiResponse = {
-      meals: Array.isArray(data.meals) ? data.meals : []
-    };
-    cache.set(cacheKey, result);
-    return result;
-  } catch (error) {
-    console.error('Error fetching meals:', error);
-    return { meals: [] };
+  } else {
+    // Non-ingredient search remains the same
+    const cacheKey = `s=${query}`;
+    if (cache.has(cacheKey)) {
+      return cache.get(cacheKey)!;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/search.php?s=${encodeURIComponent(query)}`
+      );
+      const data: ApiResponse = await response.json();
+      const result: ApiResponse = {
+        meals: Array.isArray(data.meals) ? data.meals : [],
+      };
+      cache.set(cacheKey, result);
+      return result;
+    } catch (error) {
+      console.error('Error fetching meals:', error);
+      return { meals: [] };
+    }
   }
 };
 
-// Fetch meal details
 export const getMealDetails = async (id: string) => {
   try {
     const response = await fetch(`${API_BASE_URL}/lookup.php?i=${id}`);
@@ -64,5 +102,22 @@ export const getMealDetails = async (id: string) => {
   }
 };
 
-// Export debounced search function
-export const debouncedSearchMeals = debounce(searchMeals, DEBOUNCE_DELAY);
+// Debounce function and debouncedSearchMeals remain unchanged
+
+export const fetchRandomMeals = async (count: number = 12): Promise<Meal[]> => {
+  const randomMeals: Meal[] = [];
+
+  try {
+    for (let i = 0; i < count; i++) {
+      const response = await fetch(`${API_BASE_URL}/random.php`);
+      const data: ApiResponse = await response.json();
+      if (data.meals) {
+        randomMeals.push(data.meals[0]); // Add the random meal to the array
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching random meals:', error);
+  }
+
+  return randomMeals;
+};
