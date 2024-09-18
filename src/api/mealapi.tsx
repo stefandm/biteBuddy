@@ -104,15 +104,23 @@ export const getMealDetails = async (id: string) => {
 
 // Debounce function and debouncedSearchMeals remain unchanged
 
+
 export const fetchRandomMeals = async (count: number = 12): Promise<Meal[]> => {
   const randomMeals: Meal[] = [];
+  const fetchedMealIds = new Set<string>(); // Use a Set to store unique meal IDs
 
   try {
-    for (let i = 0; i < count; i++) {
+    while (randomMeals.length < count) {
       const response = await fetch(`${API_BASE_URL}/random.php`);
       const data: ApiResponse = await response.json();
-      if (data.meals) {
-        randomMeals.push(data.meals[0]); // Add the random meal to the array
+      if (data.meals && data.meals.length > 0) {
+        const meal = data.meals[0];
+
+        // Check if the meal ID is already in the Set
+        if (!fetchedMealIds.has(meal.idMeal)) {
+          fetchedMealIds.add(meal.idMeal); // Add the new meal ID to the Set
+          randomMeals.push(meal); // Add the meal to the list
+        }
       }
     }
   } catch (error) {

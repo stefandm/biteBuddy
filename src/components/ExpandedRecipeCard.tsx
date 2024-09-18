@@ -32,7 +32,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
   return (
     <div className="rounded-lg flex flex-col text-white bg-slate-700 shadow-[1px_1px_2px_1px_#f6ad55]">
       <div className="flex flex-col items-center">
-        <h2 className="text-3xl font-semibold text-center my-10 text-orange-700">
+        <h2 className="text-3xl font-semibold text-center my-10 text-orange-300">
           {meal.strMeal}
         </h2>
         <div className="flex-col flex md:flex-row justify-evenly items-center w-full">
@@ -65,7 +65,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
       <div className="w-full h-full flex justify-center items-center">
         <button
           onClick={onAddRecipe}
-          className="md:py-2 py-1 w-full px-2 text-orange-950 md:text-xl hover:bg-orange-300  bg-orange-200"
+          className="md:py-2 py-1 w-full px-2 text-orange-950 md:text-xl hover:bg-orange-300 rounded-bl-lg bg-orange-200"
         >
           Add to My Recipes
           
