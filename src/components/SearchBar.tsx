@@ -2,33 +2,24 @@
 
 import React, { useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
-import { Meal } from '../types';
+import { useSearchContext } from '../contexts/useSearchContext';
+import { useSelectedMealContext } from '../contexts/useSelectedMealContext';
 
-interface SearchBarProps {
-  query: string;
-  searchType: 'recipe' | 'ingredient';
-  suggestions: Meal[];
-  highlightedIndex: number;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSearchKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  handleSearchTypeChange: (type: 'recipe' | 'ingredient') => void;
-  handleSearch: () => void;
-  handleSelectMeal: (idMeal: string) => void;
-  setSuggestions: React.Dispatch<React.SetStateAction<Meal[]>>;
-}
+const SearchBar: React.FC = () => {
+  const {
+    query,
+    searchType,
+    suggestions,
+    highlightedIndex,
+    handleInputChange,
+    handleSearchKeyDown,
+    handleSearchTypeChange,
+    handleSearch,
+    setSuggestions,
+  } = useSearchContext();
 
-const SearchBar: React.FC<SearchBarProps> = ({
-  query,
-  searchType,
-  suggestions,
-  highlightedIndex,
-  handleInputChange,
-  handleSearchKeyDown,
-  handleSearchTypeChange,
-  handleSearch,
-  handleSelectMeal,
-  setSuggestions,
-}) => {
+  const { selectMeal } = useSelectedMealContext();
+
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
   useClickOutside({
@@ -75,7 +66,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
             onChange={() => handleSearchTypeChange('ingredient')}
             className="mr-2 size-4 "
           />
-          <label htmlFor="ingredient" className='text-white'>Search by Ingredient</label>
+          <label htmlFor="ingredient" className="text-white">
+            Search by Ingredient
+          </label>
         </div>
       </div>
 
@@ -87,7 +80,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           {suggestions.map((suggestion, index) => (
             <li
               key={suggestion.idMeal}
-              onClick={() => handleSelectMeal(suggestion.idMeal)}
+              onClick={() => selectMeal(suggestion)}
               className={`p-2 cursor-pointer font-secondary hover:bg-gray-200 ${
                 index === highlightedIndex ? 'bg-orange-100' : ''
               }`}

@@ -3,7 +3,7 @@
 import { ApiResponse, Meal } from '../types';
 import pluralize from 'pluralize';
 
-const API_BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
+export const API_BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
 const cache = new Map<string, ApiResponse>();
 
 export const normalizeIngredient = (ingredient: string): string => {

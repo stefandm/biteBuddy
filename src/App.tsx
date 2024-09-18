@@ -1,144 +1,53 @@
 // App.tsx
 
-import React, { useState, useRef, useEffect } from 'react';
-import useAuth from './hooks/useAuth';
-import useSearch from './hooks/useSearch';
-import useRecipes from './hooks/useRecipes';
+import React, { useEffect } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+import  UserRecipesProvider  from './contexts/UserRecipesProvider';
+import  SearchProvider  from './contexts/SearchProvider';
+import { SelectedMealProvider } from './contexts/SelectedMealContext';
+
+import { useAuthContext } from './contexts/useAuthContext';
+import { useUserRecipesContext } from './contexts/useUserRecipesContext';
+import { useSelectedMealContext } from './contexts/useSelectedMealContext';
+import { useSearchContext } from './contexts/useSearchContext';
+
 import SearchBar from './components/SearchBar';
 import SavedRecipes from './components/SavedRecipes';
-import Recommendations from './components/Recommendations';
 import RecipeList from './components/RecipeList';
 import ExpandedRecipeCard from './components/ExpandedRecipeCard';
-import { Meal, Recipe } from './types';
-import { getMealDetails, fetchRandomMeals } from './api/mealapi';
-import logoIMG from '/images/logoAndName.jpg';
 import RecipeSkeleton from './components/RecipeSkeleton';
 
-const App: React.FC = () => {
-  const { user, signIn, signOut } = useAuth();
-  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
-  const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
-  const scrollToTopRef = useRef<HTMLInputElement>(null);
+import logoIMG from '/images/logoAndName.jpg';
 
-  // State for random meals
-  const [randomMeals, setRandomMeals] = useState<Meal[]>([]);
-  const [isLoadingRandomMeals, setIsLoadingRandomMeals] = useState<boolean>(false);
-
+const AppContent: React.FC = () => {
+  const { user, signIn, signOutUser } = useAuthContext();
+  const { selectedMeal, clearSelectedMeal, scrollToTopRef } = useSelectedMealContext();
   const {
     userRecipes,
+    addRecipeToUser,
     recommendations,
     isLoadingRecommendations,
-    addRecipeToUser,
-    deleteRecipeFromUser,
-  } = useRecipes(user);
+    randomMeals,
+    isLoadingRandomMeals,
+  } = useUserRecipesContext();
+  const {
+    searchResults,
+    isLoadingSearchResults,
+  } = useSearchContext();
 
-
-  const handleSelectMeal = async (idMeal: string) => {
-    const meal =
-      searchResults.find((m) => m.idMeal === idMeal) ||
-      recommendations.find((m) => m.idMeal === idMeal) ||
-      suggestions.find((m) => m.idMeal === idMeal) ||
-      randomMeals.find((m) => m.idMeal === idMeal) || // Add check for random meals
-      userRecipes.map((r) => r.meal).find((m) => m.idMeal === idMeal);
-
-    if (meal) {
-      setSelectedMeal(meal);
-      setSelectedRecipeId(null);
-
-      // Fetch meal details if instructions are not available
-      if (!meal.strInstructions) {
-        try {
-          const details = await getMealDetails(idMeal);
-          setSelectedMeal(details);
-        } catch (error) {
-          console.error('Error fetching meal details:', error);
-        }
-      }
-
+  useEffect(() => {
+    if (selectedMeal) {
       scrollToTopRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
-
-      setSuggestions([]);
-      setHighlightedIndex(-1);
-    } else {
-      console.error('Meal not found:', idMeal);
     }
-  };
+  }, [selectedMeal, scrollToTopRef]);
 
-  const {
-    query,
-    searchType,
-    suggestions,
-    searchResults,
-    highlightedIndex,
-    isLoadingSearchResults,
-    handleInputChange,
-    handleSearch,
-    handleSearchTypeChange,
-    handleSearchKeyDown,
-    setSuggestions,
-    setHighlightedIndex,
-  } = useSearch(userRecipes, handleSelectMeal);
-
-  /** Effect hook to fetch random meals when no search results are available */
-  useEffect(() => {
-    if (searchResults.length === 0 && query.trim() === '') {
-      setIsLoadingRandomMeals(true);
-      fetchRandomMeals(12).then((meals) => {
-        setRandomMeals(meals);
-        setIsLoadingRandomMeals(false);
-      });
-    }
-  }, [searchResults, query]);
-
-  /** Function to handle selecting a meal from search results, recommendations, or random meals */
-  
-
-  /** Function to handle adding a recipe to user's saved recipes */
   const handleAddRecipe = async () => {
-    if (!user) {
-      alert('You must be logged in to add a recipe.');
-      return;
-    }
-
     if (selectedMeal) {
-      const recipeExists = userRecipes.some(
-        (recipe) => recipe.meal.idMeal === selectedMeal.idMeal
-      );
-
-      if (recipeExists) {
-        alert('This recipe is already saved.');
-        return;
-      }
-
       await addRecipeToUser(selectedMeal);
-      setSelectedMeal(null);
     }
-  };
-
-  /** Function to handle deleting a recipe from user's saved recipes */
-  const handleDeleteRecipe = async (recipeId: string) => {
-    await deleteRecipeFromUser(recipeId);
-    setSelectedRecipeId(null);
-    setSelectedMeal(null);
-  };
-
-  /** Function to handle selecting a recipe from saved recipes */
-  const handleSelectRecipe = (recipe: Recipe) => {
-    setSelectedRecipeId(recipe.id);
-    setSelectedMeal(recipe.meal);
-    scrollToTopRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  };
-
-  /** Function to handle closing the expanded recipe view */
-  const handleCloseRecipe = () => {
-    setSelectedMeal(null);
-    setSelectedRecipeId(null);
   };
 
   return (
@@ -161,7 +70,7 @@ const App: React.FC = () => {
               Welcome, {user.displayName}
             </h1>
             <button
-              onClick={signOut}
+              onClick={signOutUser}
               className="px-2 py-1 font-secondary text-red-500 hover:bg-red-500 hover:text-white rounded shadow-[1px_1px_2px_1px_#f56565]"
             >
               Sign Out
@@ -182,14 +91,7 @@ const App: React.FC = () => {
         )}
 
         {/* Saved Recipes */}
-        {userRecipes.length > 0 && (
-          <SavedRecipes
-            userRecipes={userRecipes}
-            selectedRecipeId={selectedRecipeId}
-            handleSelectRecipe={handleSelectRecipe}
-            handleDeleteRecipe={handleDeleteRecipe}
-          />
-        )}
+        {userRecipes.length > 0 && <SavedRecipes />}
       </div>
 
       {/* Main content */}
@@ -198,26 +100,11 @@ const App: React.FC = () => {
         <div ref={scrollToTopRef}></div>
 
         {/* Search Bar */}
-        <SearchBar
-          query={query}
-          searchType={searchType}
-          suggestions={suggestions}
-          highlightedIndex={highlightedIndex}
-          handleInputChange={handleInputChange}
-          handleSearchKeyDown={handleSearchKeyDown}
-          handleSearchTypeChange={handleSearchTypeChange}
-          handleSearch={handleSearch}
-          handleSelectMeal={handleSelectMeal}
-          setSuggestions={setSuggestions}
-        />
+        <SearchBar />
 
         {/* Selected Meal or Search Results */}
         {selectedMeal ? (
-          <ExpandedRecipeCard
-            meal={selectedMeal}
-            onAddRecipe={handleAddRecipe}
-            onClose={handleCloseRecipe}
-          />
+          <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />
         ) : (
           <>
             {/* Search Results */}
@@ -230,38 +117,60 @@ const App: React.FC = () => {
                 <h2 className="text-3xl font-bold mb-[5vh] text-center text-orange-300">
                   Search Results
                 </h2>
-                <RecipeList meals={searchResults} onSelectMeal={handleSelectMeal} />
+                <RecipeList meals={searchResults} />
               </>
             ) : (
-              // Display random meals if no search results
-              <Recommendations
-              recommendations={recommendations}
-              isLoading={isLoadingRecommendations}
-              handleSelectMeal={handleSelectMeal}
-              />
-            )}
-
-            {/* Recommendations */}
-            <>
-              <h2 className="text-3xl mt-10 font-bold mb-[5vh] text-center text-orange-300">
-                    Need inspiration?
-              </h2>
-              {isLoadingRandomMeals ? (
-                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  <RecipeSkeleton cards={8} />
-               </div>
-              ) : (
+              <>
+                {/* Recommendations */}
+                {userRecipes.length > 0 && (
                   <>
-                    <RecipeList meals={randomMeals} onSelectMeal={handleSelectMeal} />
+                    <h2 className="text-3xl font-bold mb-[5vh] text-center text-orange-300">
+                      Based on your taste
+                    </h2>
+                    {isLoadingRecommendations ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <RecipeSkeleton cards={8} />
+                      </div>
+                    ) : (
+                      <RecipeList meals={recommendations} />
+                    )}
                   </>
                 )}
-            </>
-            
-            </>
+
+                {/* Need inspiration */}
+                <>
+                  <h2 className="text-3xl mt-[5vh] font-bold mb-[5vh] text-center text-orange-300">
+                    Need inspiration?
+                  </h2>
+                  {isLoadingRandomMeals ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                      <RecipeSkeleton cards={12} />
+                    </div>
+                  ) : (
+                    <RecipeList meals={randomMeals} />
+                  )}
+                </>
+              </>
             )}
-          </div>
-        </div>
-      );
-    };
-    
-    export default App;
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <UserRecipesProvider>
+        <SelectedMealProvider>
+          <SearchProvider>
+            <AppContent />
+          </SearchProvider>
+        </SelectedMealProvider>
+      </UserRecipesProvider>
+    </AuthProvider>
+  );
+};
+
+export default App;
