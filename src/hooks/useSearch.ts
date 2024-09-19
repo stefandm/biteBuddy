@@ -66,25 +66,40 @@ const useSearch = (
     setSearchType(type);
   };
 
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  /**
+   * Handle key down events in the search input.
+   * @param e - Keyboard event
+   * @param onSearchPerformed - Callback to execute if a search is performed without selecting a suggestion
+   */
+  const handleSearchKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    onSearchPerformed?: () => void
+  ): void => {
     if (e.key === 'Enter') {
       if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
         // User pressed Enter on a highlighted suggestion
         handleSelectMeal(suggestions[highlightedIndex]); // Pass Meal object
+        setSuggestions([]);
+        setQuery('');
       } else {
         // User pressed Enter without selecting a suggestion
         handleSearch();
+        setSuggestions([]);
+        setQuery('');
+        if (onSearchPerformed) {
+          onSearchPerformed();
+        }
       }
-      setSuggestions([]);
-      setQuery('');
     } else if (e.key === 'Escape') {
       setSuggestions([]);
       setQuery('');
     } else if (e.key === 'ArrowDown') {
+      e.preventDefault(); // Prevent cursor from moving to the end
       setHighlightedIndex((prevIndex) =>
         prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
       );
     } else if (e.key === 'ArrowUp') {
+      e.preventDefault(); // Prevent cursor from moving to the start
       setHighlightedIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
       );
