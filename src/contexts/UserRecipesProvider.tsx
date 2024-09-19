@@ -116,8 +116,20 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [fetchRandomMealsExcludingUserRecipes]);
 
+  // Updated addRecipeToUser function with duplicate check
   const addRecipeToUser = async (meal: Meal) => {
     if (user) {
+      // Check if the recipe is already saved
+      const isAlreadySaved = userRecipes.some(
+        (recipe) => recipe.meal.idMeal === meal.idMeal
+      );
+
+      if (isAlreadySaved) {
+        alert('Recipe is already saved');
+        return; // Exit the function to prevent adding duplicate
+      }
+
+      // If not saved, proceed to add the recipe
       await addRecipe(user.uid, meal);
     } else {
       alert('You must be logged in to add a recipe.');
