@@ -7,7 +7,7 @@ import { SearchProvider } from './contexts/SearchProvider';
 import { SelectedMealProvider } from './contexts/SelectedMealContext';
 
 import { useAuthContext } from './hooks/useAuthContext';
-import { useUserRecipesContext } from './hooks/useUserRecipesContext';
+import { useUserRecipesContext } from './contexts/useUserRecipesContext';
 import { useSelectedMealContext } from './hooks/useSelectedMealContext';
 import { useSearchContext } from './hooks/useSearchContext';
 
@@ -131,7 +131,7 @@ const AppContent: React.FC = () => {
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <RecipeSkeleton cards={8} />
                       </div>
-                    ) : (
+                    ) :  (
                       <RecipeList meals={recommendations} />
                     )}
                   </>

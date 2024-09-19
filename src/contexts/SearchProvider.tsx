@@ -1,7 +1,7 @@
 // contexts/SearchProvider.tsx
 
 import React from 'react';
-import { useUserRecipesContext } from '../hooks/useUserRecipesContext';
+import { useUserRecipesContext } from './useUserRecipesContext';
 import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
 import useSearch from '../hooks/useSearch';
 import { SearchContext } from './SearchContext';

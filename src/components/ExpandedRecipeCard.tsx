@@ -33,7 +33,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
     : 'No instructions available.';
 
   return (
-    <div className="rounded-lg flex flex-col text-white bg-slate-700 shadow-[1px_1px_2px_1px_#f6ad55]">
+    <div className="rounded-lg flex flex-col text-white bg-slate-700 ">
       <div className="flex flex-col items-center">
         <h2 className="text-3xl font-semibold text-center my-10 text-orange-300">
           {selectedMeal.strMeal}

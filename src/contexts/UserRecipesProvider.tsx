@@ -34,7 +34,7 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const uniqueIngredients = [...new Set(ingredients)];
       const recommendedMeals: Meal[] = [];
 
-      for (const ingredient of uniqueIngredients.slice(0, 7)) {
+      for (const ingredient of uniqueIngredients.slice(3, uniqueIngredients.length)) {
         try {
           const response = await searchMeals(ingredient);
           if (response.meals) {
