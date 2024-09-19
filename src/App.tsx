@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import  UserRecipesProvider  from './contexts/UserRecipesProvider';
-import  SearchProvider  from './contexts/SearchProvider';
+import { SearchProvider } from './contexts/SearchProvider';
 import { SelectedMealProvider } from './contexts/SelectedMealContext';
 
 import { useAuthContext } from './hooks/useAuthContext';
@@ -114,7 +114,7 @@ const AppContent: React.FC = () => {
               </div>
             ) : searchResults.length > 0 ? (
               <>
-                <h2 className="text-3xl font-bold mb-[5vh] text-center text-orange-300">
+                <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
                   Search Results
                 </h2>
                 <RecipeList meals={searchResults} />
@@ -124,7 +124,7 @@ const AppContent: React.FC = () => {
                 {/* Recommendations */}
                 {userRecipes.length > 0 && (
                   <>
-                    <h2 className="text-3xl font-bold mb-[5vh] text-center text-orange-300">
+                    <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
                       Based on your taste
                     </h2>
                     {isLoadingRecommendations ? (
@@ -139,12 +139,12 @@ const AppContent: React.FC = () => {
 
                 {/* Need inspiration */}
                 <>
-                  <h2 className="text-3xl mt-[5vh] font-bold mb-[5vh] text-center text-orange-300">
-                    Need inspiration?
+                  <h2 className="text-4xl  font-bold my-[5vh] text-center text-orange-300 ">
+                    In need of inspiration?
                   </h2>
                   {isLoadingRandomMeals ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                      <RecipeSkeleton cards={12} />
+                      <RecipeSkeleton cards={8} />
                     </div>
                   ) : (
                     <RecipeList meals={randomMeals} />

@@ -6,7 +6,7 @@ import { Meal, Recipe } from '../types';
 
 const useSearch = (
   userRecipes: Recipe[],
-  handleSelectMeal: (idMeal: string) => void
+  handleSelectMeal: (meal: Meal) => void // Updated to accept Meal object
 ) => {
   const [query, setQuery] = useState<string>('');
   const [searchType, setSearchType] = useState<'recipe' | 'ingredient'>('recipe');
@@ -15,20 +15,27 @@ const useSearch = (
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
 
+  // Handle input changes and fetch suggestions
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setQuery(query);
+    const inputQuery = e.target.value;
+    setQuery(inputQuery);
     setHighlightedIndex(-1);
 
-    if (query.length > 2) {
-      const response = await searchMeals(query);
-      const results = response.meals || [];
-      setSuggestions(results.slice(0, 5));
+    if (inputQuery.length > 2) {
+      try {
+        const response = await searchMeals(inputQuery);
+        const results = response.meals || [];
+        setSuggestions(results.slice(0, 5));
+      } catch (error) {
+        console.error('Error fetching suggestions:', error);
+        setSuggestions([]);
+      }
     } else {
       setSuggestions([]);
     }
   };
 
+  // Handle performing the search
   const handleSearch = useCallback(async () => {
     if (query.trim() === '') {
       setSearchResults([]);
@@ -36,30 +43,40 @@ const useSearch = (
     }
 
     setIsLoadingSearchResults(true);
-    const isIngredientSearch = searchType === 'ingredient';
-    const response = await searchMeals(query, isIngredientSearch);
+    try {
+      const isIngredientSearch = searchType === 'ingredient';
+      const response = await searchMeals(query, isIngredientSearch);
+      const results = response.meals || [];
 
-    const results = response.meals || [];
+      const filteredResults = results.filter(
+        (meal: Meal) =>
+          !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
+      );
 
-    const filteredResults = results.filter(
-      (meal: Meal) =>
-        !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
-    );
-
-    setSearchResults(filteredResults);
-    setSuggestions([]);
-    setIsLoadingSearchResults(false);
+      setSearchResults(filteredResults);
+    } catch (error) {
+      console.error('Error performing search:', error);
+      setSearchResults([]);
+    } finally {
+      setIsLoadingSearchResults(false);
+      setSuggestions([]);
+      setQuery('');
+    }
   }, [query, searchType, userRecipes]);
 
+  // Handle changing the search type (recipe or ingredient)
   const handleSearchTypeChange = (type: 'recipe' | 'ingredient') => {
     setSearchType(type);
   };
 
+  // Handle key down events in the search input
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
-        handleSelectMeal(suggestions[highlightedIndex].idMeal);
+        // User pressed Enter on a highlighted suggestion
+        handleSelectMeal(suggestions[highlightedIndex]); // Pass Meal object
       } else {
+        // User pressed Enter without selecting a suggestion
         handleSearch();
       }
       setSuggestions([]);

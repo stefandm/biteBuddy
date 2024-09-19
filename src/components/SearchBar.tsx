@@ -18,17 +18,24 @@ const SearchBar: React.FC = () => {
     setSuggestions,
   } = useSearchContext();
 
-  const { selectMeal } = useSelectedMealContext();
+  const { selectMeal, clearSelectedMeal } = useSelectedMealContext();
 
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
+  // Handle clicks outside the suggestions dropdown to close it
   useClickOutside({
     ref: suggestionsRef,
     handler: () => setSuggestions([]),
   });
 
+  // Function to handle "Search" button click
+  const handleButtonClick = async () => {
+    await handleSearch();       // Perform the search
+    clearSelectedMeal();        // Close the ExpandedRecipeCard
+  };
+
   return (
-    <div className="relative mb-8 w-full  md:max-w-md">
+    <div className="relative mb-8 w-full md:max-w-md">
       <div className="mt-6 flex flex-col">
         <div className="flex font-secondary">
           <input
@@ -36,11 +43,11 @@ const SearchBar: React.FC = () => {
             placeholder="Search for a meal"
             value={query}
             onChange={handleInputChange}
-            onKeyDown={handleSearchKeyDown}
-            className="px-2 py-1 border  bg-slate-100 border-gray-400  flex-1 rounded-l-lg focus:outline-none"
+            onKeyDown={handleSearchKeyDown} // Handle key events
+            className="px-2 py-1 border bg-slate-100 border-gray-400 flex-1 rounded-l-lg focus:outline-none"
           />
           <button
-            onClick={handleSearch}
+            onClick={handleButtonClick} // Handle search button click
             className="px-2 py-1 bg-orange-700 text-white hover:bg-orange-900 rounded-r-lg"
           >
             Search
@@ -80,7 +87,7 @@ const SearchBar: React.FC = () => {
           {suggestions.map((suggestion, index) => (
             <li
               key={suggestion.idMeal}
-              onClick={() => selectMeal(suggestion)}
+              onClick={() => selectMeal(suggestion)} // Set selected meal on click
               className={`p-2 cursor-pointer font-secondary hover:bg-gray-200 ${
                 index === highlightedIndex ? 'bg-orange-100' : ''
               }`}
