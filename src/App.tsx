@@ -140,7 +140,7 @@ const AppContent: React.FC = () => {
                 {/* Need inspiration */}
                 <>
                   <h2 className="text-3xl mt-[5vh] font-bold mb-[5vh] text-center text-orange-300">
-                    Need inspiration?
+                    In need of inspiration?
                   </h2>
                   {isLoadingRandomMeals ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

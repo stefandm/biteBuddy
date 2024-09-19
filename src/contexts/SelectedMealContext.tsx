@@ -51,10 +51,4 @@ export const SelectedMealProvider: React.FC<{ children: React.ReactNode }> = ({ 
   );
 };
 
-// export const useSelectedMealContext = () => {
-//   const context = useContext(SelectedMealContext);
-//   if (context === undefined) {
-//     throw new Error('useSelectedMealContext must be used within a SelectedMealProvider');
-//   }
-//   return context;
-// };
+

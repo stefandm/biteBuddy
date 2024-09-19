@@ -37,7 +37,7 @@ const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
       setSearchResults([]);
       return;
     }
-
+    
     setIsLoadingSearchResults(true);
     const isIngredientSearch = searchType === 'ingredient';
     const response = await searchMeals(query, isIngredientSearch);
