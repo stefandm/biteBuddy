@@ -3,8 +3,8 @@
 import React, { useState, useCallback } from 'react';
 import { searchMeals } from '../api/mealapi';
 import { Meal } from '../types';
-import { useUserRecipesContext } from './useUserRecipesContext';
-import { useSelectedMealContext } from './useSelectedMealContext';
+import { useUserRecipesContext } from '../hooks/useUserRecipesContext';
+import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
 import { SearchContext } from './SearchContext';
 
 const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

@@ -6,10 +6,10 @@ import  UserRecipesProvider  from './contexts/UserRecipesProvider';
 import  SearchProvider  from './contexts/SearchProvider';
 import { SelectedMealProvider } from './contexts/SelectedMealContext';
 
-import { useAuthContext } from './contexts/useAuthContext';
-import { useUserRecipesContext } from './contexts/useUserRecipesContext';
-import { useSelectedMealContext } from './contexts/useSelectedMealContext';
-import { useSearchContext } from './contexts/useSearchContext';
+import { useAuthContext } from './hooks/useAuthContext';
+import { useUserRecipesContext } from './hooks/useUserRecipesContext';
+import { useSelectedMealContext } from './hooks/useSelectedMealContext';
+import { useSearchContext } from './hooks/useSearchContext';
 
 import SearchBar from './components/SearchBar';
 import SavedRecipes from './components/SavedRecipes';
@@ -140,7 +140,7 @@ const AppContent: React.FC = () => {
                 {/* Need inspiration */}
                 <>
                   <h2 className="text-3xl mt-[5vh] font-bold mb-[5vh] text-center text-orange-300">
-                    In need of inspiration?
+                    Need inspiration?
                   </h2>
                   {isLoadingRandomMeals ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

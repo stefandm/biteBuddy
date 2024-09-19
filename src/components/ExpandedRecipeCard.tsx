@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { INGREDIENT_KEYS, IngredientKey } from '../types';
-import { useSelectedMealContext } from '../contexts/useSelectedMealContext';
+import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
 
 interface ExpandedRecipeCardProps {
   onAddRecipe: () => void;

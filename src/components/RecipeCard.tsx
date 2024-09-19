@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Meal } from '../types';
-import { useSelectedMealContext } from '../contexts/useSelectedMealContext';
+import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
 
 interface RecipeCardProps {
   meal: Meal;

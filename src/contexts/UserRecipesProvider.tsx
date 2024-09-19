@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { addRecipe, deleteRecipe, listenToUserRecipes } from '../firebase/firestoreService';
 import { API_BASE_URL, searchMeals } from '../api/mealapi';
 import { Meal, Recipe, INGREDIENT_KEYS, IngredientKey, ApiResponse } from '../types';
-import { useAuthContext } from './useAuthContext';
+import { useAuthContext } from '../hooks/useAuthContext';
 import { UserRecipesContext } from './UserRecipesContext';
 
 const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

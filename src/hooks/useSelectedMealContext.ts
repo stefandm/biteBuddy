@@ -1,7 +1,7 @@
 // contexts/useSelectedMealContext.ts
 
 import { useContext } from 'react';
-import { SelectedMealContext } from './SelectedMealContext';
+import { SelectedMealContext } from '../contexts/SelectedMealContext';
 
 export const useSelectedMealContext = () => {
   const context = useContext(SelectedMealContext);

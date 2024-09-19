@@ -2,8 +2,8 @@
 
 import React, { useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
-import { useSearchContext } from '../contexts/useSearchContext';
-import { useSelectedMealContext } from '../contexts/useSelectedMealContext';
+import { useSearchContext } from '../hooks/useSearchContext';
+import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
 
 const SearchBar: React.FC = () => {
   const {

@@ -1,8 +1,8 @@
 // components/SavedRecipes.tsx
 
 import React from 'react';
-import { useUserRecipesContext } from '../contexts/useUserRecipesContext';
-import { useSelectedMealContext } from '../contexts/useSelectedMealContext';
+import { useUserRecipesContext } from '../hooks/useUserRecipesContext';
+import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
 
 const SavedRecipes: React.FC = () => {
   const { userRecipes, deleteRecipeFromUser } = useUserRecipesContext();
