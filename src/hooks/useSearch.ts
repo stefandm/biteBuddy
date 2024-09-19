@@ -6,7 +6,7 @@ import { Meal, Recipe } from '../types';
 
 const useSearch = (
   userRecipes: Recipe[],
-  handleSelectMeal: (meal: Meal) => void // Updated to accept Meal object
+  handleSelectMeal: (meal: Meal) => void
 ) => {
   const [query, setQuery] = useState<string>('');
   const [searchType, setSearchType] = useState<'recipe' | 'ingredient'>('recipe');
@@ -15,7 +15,6 @@ const useSearch = (
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
 
-  // Handle input changes and fetch suggestions
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputQuery = e.target.value;
     setQuery(inputQuery);
@@ -35,7 +34,6 @@ const useSearch = (
     }
   };
 
-  // Handle performing the search
   const handleSearch = useCallback(async () => {
     if (query.trim() === '') {
       setSearchResults([]);
@@ -64,12 +62,10 @@ const useSearch = (
     }
   }, [query, searchType, userRecipes]);
 
-  // Handle changing the search type (recipe or ingredient)
   const handleSearchTypeChange = (type: 'recipe' | 'ingredient') => {
     setSearchType(type);
   };
 
-  // Handle key down events in the search input
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
@@ -108,6 +104,7 @@ const useSearch = (
     handleSearchKeyDown,
     setSuggestions,
     setHighlightedIndex,
+    setQuery, // Ensure this is returned
   };
 };
 

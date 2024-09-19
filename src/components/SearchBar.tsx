@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
 import { useSearchContext } from '../hooks/useSearchContext';
 import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
+import { Meal } from '../types';
 
 const SearchBar: React.FC = () => {
   const {
@@ -16,6 +17,7 @@ const SearchBar: React.FC = () => {
     handleSearchTypeChange,
     handleSearch,
     setSuggestions,
+    setQuery, // Destructure setQuery
   } = useSearchContext();
 
   const { selectMeal, clearSelectedMeal } = useSelectedMealContext();
@@ -32,6 +34,13 @@ const SearchBar: React.FC = () => {
   const handleButtonClick = async () => {
     await handleSearch();       // Perform the search
     clearSelectedMeal();        // Close the ExpandedRecipeCard
+  };
+
+  // New function to handle suggestion clicks
+  const handleSuggestionClick = (suggestion: Meal) => {
+    selectMeal(suggestion);      // Set the selected meal to display ExpandedRecipeCard
+    setSuggestions([]);          // Clear the suggestions to hide them
+    setQuery('');                // Clear the search input
   };
 
   return (
@@ -87,7 +96,7 @@ const SearchBar: React.FC = () => {
           {suggestions.map((suggestion, index) => (
             <li
               key={suggestion.idMeal}
-              onClick={() => selectMeal(suggestion)} // Set selected meal on click
+              onClick={() => handleSuggestionClick(suggestion)} // Use the new handler
               className={`p-2 cursor-pointer font-secondary hover:bg-gray-200 ${
                 index === highlightedIndex ? 'bg-orange-100' : ''
               }`}
