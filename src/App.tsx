@@ -7,7 +7,7 @@ import { SearchProvider } from './contexts/SearchProvider';
 import { SelectedMealProvider } from './contexts/SelectedMealContext';
 
 import { useAuthContext } from './hooks/useAuthContext';
-import { useUserRecipesContext } from './contexts/useUserRecipesContext';
+import { useUserRecipesContext } from './hooks/useUserRecipesContext';
 import { useSelectedMealContext } from './hooks/useSelectedMealContext';
 import { useSearchContext } from './hooks/useSearchContext';
 
@@ -15,7 +15,7 @@ import SearchBar from './components/SearchBar';
 import SavedRecipes from './components/SavedRecipes';
 import RecipeList from './components/RecipeList';
 import ExpandedRecipeCard from './components/ExpandedRecipeCard';
-import RecipeSkeleton from './components/RecipeSkeleton';
+import SkeletonList from './components/SkeletonList';
 
 import logoIMG from '/images/logoAndName.jpg';
 
@@ -66,7 +66,7 @@ const AppContent: React.FC = () => {
         {/* User authentication section */}
         {user ? (
           <div className="flex flex-col items-center gap-4">
-            <h1 className="text-2xl text-orange-500 text-center font-bold">
+            <h1 className="text-3xl  text-orange-300 text-center font-bold">
               Welcome, {user.displayName}
             </h1>
             <button
@@ -95,7 +95,7 @@ const AppContent: React.FC = () => {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 p-4 overflow-auto">
+      <div className="flex-1 px-8 overflow-auto">
         {/* Reference for scrolling to top */}
         <div ref={scrollToTopRef}></div>
 
@@ -109,9 +109,7 @@ const AppContent: React.FC = () => {
           <>
             {/* Search Results */}
             {isLoadingSearchResults ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <RecipeSkeleton cards={8} />
-              </div>
+              <SkeletonList/>
             ) : searchResults.length > 0 ? (
               <>
                 <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
@@ -128,9 +126,7 @@ const AppContent: React.FC = () => {
                       Based on your taste
                     </h2>
                     {isLoadingRecommendations ? (
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <RecipeSkeleton cards={8} />
-                      </div>
+                    <SkeletonList/>
                     ) :  (
                       <RecipeList meals={recommendations} />
                     )}
@@ -143,9 +139,7 @@ const AppContent: React.FC = () => {
                     In need of inspiration?
                   </h2>
                   {isLoadingRandomMeals ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                      <RecipeSkeleton cards={8} />
-                    </div>
+                    <SkeletonList/>
                   ) : (
                     <RecipeList meals={randomMeals} />
                   )}

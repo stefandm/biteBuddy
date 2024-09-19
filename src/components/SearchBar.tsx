@@ -44,9 +44,9 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="relative mb-8 w-full md:max-w-md">
+    <div className="relative mb-8 w-full md:max-w-md font-secondary">
       <div className="mt-6 flex flex-col">
-        <div className="flex font-secondary">
+        <div className="flex ">
           <input
             type="text"
             placeholder="Search for a meal"
@@ -97,7 +97,7 @@ const SearchBar: React.FC = () => {
             <li
               key={suggestion.idMeal}
               onClick={() => handleSuggestionClick(suggestion)} // Use the new handler
-              className={`p-2 cursor-pointer font-secondary hover:bg-gray-200 ${
+              className={`p-2 cursor-pointer  hover:bg-gray-200 ${
                 index === highlightedIndex ? 'bg-orange-100' : ''
               }`}
             >
