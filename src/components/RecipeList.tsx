@@ -10,7 +10,7 @@ interface RecipeListProps {
 
 const RecipeList = React.memo(({ meals }: RecipeListProps) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-8">
+    <div className="grid grid-cols-2 md:grid-cols-3 mb-8 lg:grid-cols-4 gap-8">
       {meals.map((meal) => (
         <RecipeCard key={meal.idMeal} meal={meal} />
       ))}

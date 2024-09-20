@@ -17,8 +17,7 @@ const SearchBar: React.FC = () => {
     handleSearchTypeChange,
     handleSearchKeyDown,
     setSuggestions,
-    setQuery, // Destructure setQuery
-    isLoadingSearchResults,
+    setQuery, 
   } = useSearchContext();
 
   const { selectMeal, clearSelectedMeal } = useSelectedMealContext();
@@ -62,7 +61,7 @@ const SearchBar: React.FC = () => {
             placeholder="Search for a meal"
             value={query}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown} // Handle key events directly
+            onKeyDown={handleKeyDown}
             className="px-2 py-1 border bg-slate-100 border-gray-400 flex-1 rounded-l-lg focus:outline-none"
             aria-autocomplete="list"
             aria-controls="search-suggestions"
@@ -73,7 +72,7 @@ const SearchBar: React.FC = () => {
             }
           />
           <button
-            onClick={handleButtonClick} // Handle search button click
+            onClick={handleButtonClick}
             className="px-2 py-1 bg-orange-700 text-white hover:bg-orange-900 rounded-r-lg"
             aria-label="Search"
           >
@@ -106,28 +105,18 @@ const SearchBar: React.FC = () => {
         </div>
       </div>
 
-      {/* Optional: Display a loading indicator if search is in progress */}
-      {isLoadingSearchResults && (
-        <div className="flex justify-center items-center mt-4">
-          {/* Replace with your spinner component or any loading indicator */}
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
-        </div>
-      )}
-
-    
-
       {suggestions.length > 0 && (
         <ul
           ref={suggestionsRef}
           id="search-suggestions"
-          className="absolute left-0 right-0 top-12 bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-10"
+          className="absolute left-0 right-0 top-8 bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-10"
           role="listbox"
         >
           {suggestions.map((suggestion, index) => (
             <li
               id={`suggestion-${index}`}
               key={suggestion.idMeal}
-              onClick={() => handleSuggestionClick(suggestion)} // Use the new handler
+              onClick={() => handleSuggestionClick(suggestion)} 
               className={`p-2 cursor-pointer hover:bg-gray-200 ${
                 index === highlightedIndex ? 'bg-orange-100' : ''
               }`}

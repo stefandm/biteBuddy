@@ -13,7 +13,6 @@ const useSearch = (
   const [suggestions, setSuggestions] = useState<Meal[]>([]);
   const [searchResults, setSearchResults] = useState<Meal[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
-  const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputQuery = e.target.value;
@@ -40,7 +39,6 @@ const useSearch = (
       return;
     }
 
-    setIsLoadingSearchResults(true);
     try {
       const isIngredientSearch = searchType === 'ingredient';
       const response = await searchMeals(query, isIngredientSearch);
@@ -56,7 +54,6 @@ const useSearch = (
       console.error('Error performing search:', error);
       setSearchResults([]);
     } finally {
-      setIsLoadingSearchResults(false);
       setSuggestions([]);
       setQuery('');
     }
@@ -112,14 +109,13 @@ const useSearch = (
     suggestions,
     searchResults,
     highlightedIndex,
-    isLoadingSearchResults,
     handleInputChange,
     handleSearch,
     handleSearchTypeChange,
     handleSearchKeyDown,
     setSuggestions,
     setHighlightedIndex,
-    setQuery, // Ensure this is returned
+    setQuery, 
   };
 };
 
