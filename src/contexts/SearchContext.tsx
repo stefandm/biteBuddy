@@ -9,6 +9,7 @@ interface SearchContextProps {
   suggestions: Meal[];
   searchResults: Meal[];
   highlightedIndex: number;
+  isLoadingSearchResults: boolean;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSearch: () => Promise<void>;
   handleSearchTypeChange: (type: 'recipe' | 'ingredient') => void;
