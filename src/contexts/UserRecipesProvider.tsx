@@ -6,6 +6,7 @@ import { API_BASE_URL, searchMeals } from '../api/mealapi';
 import { Meal, Recipe, INGREDIENT_KEYS, IngredientKey, ApiResponse } from '../types';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { UserRecipesContext } from './UserRecipesContext';
+import { toast } from 'react-toastify'; // Import toast
 
 const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuthContext();
@@ -15,6 +16,7 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [randomMeals, setRandomMeals] = useState<Meal[]>([]);
   const [isLoadingRandomMeals, setIsLoadingRandomMeals] = useState<boolean>(false);
 
+  
   // Generates recommendations based on user's saved recipes
   const generateRecommendations = useCallback(async (recipes: Recipe[]) => {
     if (recipes.length === 0) {
@@ -45,6 +47,7 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         } catch (error) {
           console.error('Error fetching meals:', error);
+          toast.error('Failed to fetch meal recommendations.');
         }
       }
 
@@ -86,6 +89,7 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setRandomMeals(randomMealsList);
     } catch (error) {
       console.error('Error fetching random meals:', error);
+      toast.error('Failed to fetch random meals.');
     } finally {
       setIsLoadingRandomMeals(false);
     }
@@ -125,20 +129,32 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
       );
 
       if (isAlreadySaved) {
-        alert('Recipe is already saved');
+        toast.info('Recipe is already saved');
         return; // Exit the function to prevent adding duplicate
       }
 
-      // If not saved, proceed to add the recipe
-      await addRecipe(user.uid, meal);
+      try {
+        // If not saved, proceed to add the recipe
+        await addRecipe(user.uid, meal);
+        toast.success('Recipe saved');
+      } catch (error) {
+        console.error('Error adding recipe:', error);
+        toast.error('Failed to save the recipe.');
+      }
     } else {
-      alert('You must be logged in to add a recipe.');
+      toast.error('You must be signed in to add a recipe.');
     }
   };
 
   const deleteRecipeFromUser = async (recipeId: string) => {
     if (user) {
-      await deleteRecipe(recipeId);
+      try {
+        await deleteRecipe(recipeId);
+        // toast.success('Recipe deleted successfully');
+      } catch (error) {
+        console.error('Error deleting recipe:', error);
+        toast.error('Failed to delete the recipe.');
+      }
     }
   };
 
@@ -149,7 +165,7 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
         addRecipeToUser,
         deleteRecipeFromUser,
         recommendations,
-        isLoadingRecommendations,
+        isLoadingRecommendations, 
         randomMeals,
         isLoadingRandomMeals,
       }}

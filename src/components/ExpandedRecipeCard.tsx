@@ -70,7 +70,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
           onClick={onAddRecipe}
           className="md:py-2 py-1 w-full px-2 text-orange-950 md:text-xl hover:bg-orange-300 rounded-bl-lg bg-orange-200"
         >
-          Add to My Recipes
+          Save Recipe
         </button>
         <button
           onClick={onClose}

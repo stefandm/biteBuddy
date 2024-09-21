@@ -18,6 +18,8 @@ import ExpandedRecipeCard from './components/ExpandedRecipeCard';
 import SkeletonList from './components/SkeletonList';
 
 import logoIMG from '/images/logoAndName.jpg';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import default styles
 
 const AppContent: React.FC = () => {
   const { user, signIn, signOutUser } = useAuthContext();
@@ -155,6 +157,7 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
+    <>
     <AuthProvider>
       <UserRecipesProvider>
         <SelectedMealProvider>
@@ -164,6 +167,18 @@ const App: React.FC = () => {
         </SelectedMealProvider>
       </UserRecipesProvider>
     </AuthProvider>
+    <ToastContainer
+        position="bottom-center"      // Position of the toast
+        autoClose={1500}          // Duration before auto-close (in ms)
+        hideProgressBar={true}   // Show progress bar
+        newestOnTop={false}       // New toasts appear at the bottom
+        closeOnClick              // Close toast on click
+        rtl={false}               // Left-to-right layout
+        pauseOnFocusLoss          // Pause toast on focus loss
+        draggable                 // Allow dragging to dismiss
+        theme="dark"             // Theme: 'light', 'dark', or 'colored'
+      />
+    </>
   );
 };
 

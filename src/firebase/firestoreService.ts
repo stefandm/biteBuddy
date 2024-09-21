@@ -38,7 +38,7 @@ export const listenToUserRecipes = (userId: string, callback: (recipes: Recipe[]
 export const deleteRecipe = async (recipeId: string) => {
     try {
         await deleteDoc(doc(db, 'recipes', recipeId));
-        console.log('Recipe deleted with ID: ', recipeId);
+        // console.log('Recipe deleted with ID: ', recipeId);
     } catch (e) {
         console.error('Error deleting recipe: ', e);
     }
