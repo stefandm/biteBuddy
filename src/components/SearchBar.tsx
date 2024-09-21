@@ -51,10 +51,14 @@ const SearchBar: React.FC = () => {
 
   // Handle key down events directly in the component
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    handleSearchKeyDown(e, () => {
-      clearSelectedMeal();
-      inputRef.current?.blur(); // Dismiss the keyboard
-    });
+    // Only handle arrow keys and escape
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Escape') {
+      handleSearchKeyDown(e, () => {
+        clearSelectedMeal();
+        inputRef.current?.blur(); // Dismiss the keyboard
+      });
+    }
+    // Do not handle 'Enter' key here to allow form submission
   };
 
   return (
@@ -81,7 +85,7 @@ const SearchBar: React.FC = () => {
               enterKeyHint="search" // Hint to display 'Search' on the keyboard
             />
             <button
-              type="submit" // Change from "button" to "submit"
+              type="submit" // Changed from "button" to "submit"
               className="px-2 py-1 bg-orange-700 text-white hover:bg-orange-900 rounded-r-lg"
               aria-label="Search"
             >
@@ -115,14 +119,13 @@ const SearchBar: React.FC = () => {
         </div>
       </form>
 
-    
 
       {/* Suggestions Dropdown */}
       {suggestions.length > 0 && (
         <ul
           ref={suggestionsRef}
           id="search-suggestions"
-          className="absolute left-0 right-0 top-12 bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-10"
+          className="absolute left-0 right-0 top-8 bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-10"
           role="listbox"
         >
           {suggestions.map((suggestion, index) => (
