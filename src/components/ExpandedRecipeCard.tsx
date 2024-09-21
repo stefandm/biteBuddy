@@ -65,7 +65,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
           <p>{instructions}</p>
         </div>
       </div>
-      <div className="w-full flex ">
+      <div className="w-full flex">
         <button
           onClick={onAddRecipe}
           className="md:py-2 py-1 w-full px-2 text-orange-950 md:text-xl hover:bg-orange-300 rounded-bl-lg bg-orange-200"

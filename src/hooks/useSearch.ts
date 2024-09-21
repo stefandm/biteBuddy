@@ -1,8 +1,8 @@
 // hooks/useSearch.ts
 
 import { useState, useCallback } from 'react';
-import { searchMeals } from '../api/mealapi';
-import { Meal, Recipe } from '../types';
+import { searchMeals, lookupMeal } from '../api/mealapi';
+import { Meal, Recipe} from '../types';
 
 const useSearch = (
   userRecipes: Recipe[],
@@ -22,7 +22,7 @@ const useSearch = (
 
     if (inputQuery.length > 2) {
       try {
-        const response = await searchMeals(inputQuery);
+        const response = await searchMeals(inputQuery, searchType === 'ingredient');
         const results = response.meals || [];
         setSuggestions(results.slice(0, 5));
       } catch (error) {
@@ -46,7 +46,20 @@ const useSearch = (
       const response = await searchMeals(query, isIngredientSearch);
       const results = response.meals || [];
 
-      const filteredResults = results.filter(
+      // If searching by ingredient, results contain only idMeal, strMeal, and strMealThumb
+      // To get full details, you need to fetch each meal's full data
+      let detailedResults: Meal[] = [];
+
+      if (isIngredientSearch) {
+        // Fetch full details for each meal
+        const fetchPromises = results.map((meal) => lookupMeal(meal.idMeal));
+        detailedResults = await Promise.all(fetchPromises);
+      } else {
+        // If searching by recipe, assume full details are already present
+        detailedResults = results;
+      }
+
+      const filteredResults = detailedResults.filter(
         (meal: Meal) =>
           !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
       );
