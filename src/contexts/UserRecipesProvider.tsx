@@ -142,7 +142,7 @@ const UserRecipesProvider: React.FC<{ children: React.ReactNode }> = ({ children
         toast.error('Failed to save the recipe.');
       }
     } else {
-      toast.error('You must be signed in to add a recipe.');
+      toast.error('You must be signed in to save a recipe.');
     }
   };
 
