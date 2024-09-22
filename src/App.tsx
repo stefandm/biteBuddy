@@ -122,7 +122,7 @@ const AppContent: React.FC = () => {
             ) : (
               <>
                 {/* Recommendations */}
-                {userRecipes.length > 0 && (
+                {recommendations.length > 0 && (
                   <>
                     <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
                       Based on your taste
