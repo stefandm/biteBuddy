@@ -1,5 +1,3 @@
-// components/ExpandedRecipeCard.tsx
-
 import React from 'react';
 import { INGREDIENT_KEYS, IngredientKey } from '../types';
 import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
@@ -33,7 +31,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
     : 'No instructions available.';
 
   return (
-    <div className="rounded-lg flex flex-col text-white bg-slate-700 mb-8">
+    <div className="rounded-lg flex flex-col text-white bg-slate-800 mb-8">
       <div className="flex flex-col items-center">
         <h2 className="text-3xl font-semibold text-center my-10 text-orange-300">
           {selectedMeal.strMeal}
@@ -42,7 +40,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
           <img
             src={selectedMeal.strMealThumb}
             alt={selectedMeal.strMeal}
-            className="w-auto flex-1 object-cover h-[40vh] md:h-auto md:w-[40vw] lg:max-h-[60vh] lg:max-w-[60vw] rounded-lg border-slate-100"
+            className="w-auto flex-1 object-cover h-[40vh] md:h-auto md:w-[40vw] lg:max-h-[60vh] lg:max-w-[60vw] rounded-lg border-slate-100 "
           />
           <div className="flex flex-col justify-evenly items-center mt-6 px-14 font-secondary">
             <h3 className="text-lg font-semibold mb-2">Ingredients:</h3>

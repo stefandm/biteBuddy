@@ -1,5 +1,3 @@
-// contexts/UserRecipesContext.tsx
-
 import { createContext } from 'react';
 import { Recipe, Meal } from '../types';
 

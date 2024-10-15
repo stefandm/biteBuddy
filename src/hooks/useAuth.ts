@@ -1,5 +1,3 @@
-// hooks/useAuth.ts
-
 import { useState, useEffect } from 'react';
 import { auth, provider } from '../firebase/config';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';

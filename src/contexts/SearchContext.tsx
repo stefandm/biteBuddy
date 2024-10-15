@@ -1,5 +1,3 @@
-// contexts/SearchContext.tsx
-
 import { createContext } from 'react';
 import { Meal } from '../types';
 

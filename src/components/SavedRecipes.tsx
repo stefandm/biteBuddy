@@ -1,5 +1,3 @@
-// components/SavedRecipes.tsx
-
 import React from 'react';
 import { useUserRecipesContext } from '../hooks/useUserRecipesContext';
 import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
@@ -24,7 +22,7 @@ const SavedRecipes: React.FC = () => {
               className={`w-full  text-left py-[3px] px-2 rounded-l-lg md:rounded-t-lg md:rounded-bl-none lg:rounded-l-lg lg:rounded-r-none hover:bg-orange-400 hover:text-black md:text-center lg:text-left   ${
                 selectedMeal?.idMeal === recipe.meal.idMeal
                   ? 'bg-orange-300 text-black '
-                  : 'bg-slate-700 text-white'
+                  : 'bg-slate-800 text-white'
               }`}
             >
               {recipe.meal.strMeal}

@@ -1,5 +1,3 @@
-// hooks/useSearch.ts
-
 import { useState, useCallback } from 'react';
 import { searchMeals, lookupMeal } from '../api/mealapi';
 import { Meal, Recipe} from '../types';

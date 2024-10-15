@@ -1,5 +1,3 @@
-// hooks/useSearchContext.ts
-
 import { useContext } from 'react';
 import { SearchContext } from '../contexts/SearchContext';
 

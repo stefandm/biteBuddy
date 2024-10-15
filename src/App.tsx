@@ -1,5 +1,3 @@
-// App.tsx
-
 import React, { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import  UserRecipesProvider  from './contexts/UserRecipesProvider';
@@ -53,15 +51,15 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col bg-slate-800 font-body font-main md:flex-row min-h-screen">
+    <div className="flex flex-col bg-slate-900 font-body font-main md:flex-row min-h-screen">
       {/* Sidebar with user info and saved recipes */}
       <div
-        className="border-b md:border-r border-orange-800 p-4 overflow-auto
+        className="border-b md:border-r border-orange-300 p-4 overflow-auto
         md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[14vw]
-        relative flex-shrink-0"
+        relative flex-shrink-"
       >
         <img
-          className="hidden md:block h-auto w-auto object-cover mb-8 scale-[80%] rounded-[20%]"
+          className="hidden md:inline-block h-auto w-auto object-cover mb-8 scale-[80%] rounded-[20%]"
           src={logoIMG}
           alt="Logo"
         />
@@ -97,7 +95,7 @@ const AppContent: React.FC = () => {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 px-8 overflow-auto">
+      <div className="flex-1 px-6 md:px-8 overflow-auto">
         {/* Reference for scrolling to top */}
         <div ref={scrollToTopRef}></div>
 

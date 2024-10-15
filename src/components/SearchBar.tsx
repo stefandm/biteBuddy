@@ -1,5 +1,3 @@
-// components/SearchBar.tsx
-
 import React, { useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
 import { useSearchContext } from '../hooks/useSearchContext';
@@ -51,7 +49,6 @@ const SearchBar: React.FC = () => {
 
   // Handle key down events directly in the component
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Only handle arrow keys and escape
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Escape') {
       handleSearchKeyDown(e, () => {
         clearSelectedMeal();

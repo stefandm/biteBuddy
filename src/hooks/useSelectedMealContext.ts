@@ -1,5 +1,3 @@
-// hooks/useSelectedMealContext.ts
-
 import { useContext } from 'react';
 import { SelectedMealContext } from '../contexts/SelectedMealContext';
 

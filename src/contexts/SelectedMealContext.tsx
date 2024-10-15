@@ -1,5 +1,3 @@
-// contexts/SelectedMealContext.tsx
-
 import React, { createContext, useState, useRef } from 'react';
 import { Meal } from '../types';
 

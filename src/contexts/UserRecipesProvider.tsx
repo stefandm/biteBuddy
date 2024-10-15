@@ -1,5 +1,3 @@
-// contexts/UserRecipesProvider.tsx
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { addRecipe, deleteRecipe, listenToUserRecipes } from '../firebase/firestoreService';
 import { API_BASE_URL, searchMeals } from '../api/mealapi';

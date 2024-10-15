@@ -1,10 +1,7 @@
-// api/mealapi.ts
-
 import { ApiResponse, Meal } from "../types";
 
 export const API_BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
 
-// Function to search meals by name or ingredient
 export const searchMeals = async (
   query: string,
   isIngredientSearch: boolean = false
@@ -18,7 +15,7 @@ export const searchMeals = async (
   return data;
 };
 
-// Function to lookup meal details by ID
+// lookup meal details by ID
 export const lookupMeal = async (idMeal: string): Promise<Meal> => {
   const response = await fetch(`${API_BASE_URL}/lookup.php?i=${idMeal}`);
   if (!response.ok) {

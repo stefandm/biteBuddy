@@ -1,10 +1,9 @@
-// src/firestoreService.ts
 import { collection, addDoc, Timestamp, onSnapshot, query, where, doc, deleteDoc } from 'firebase/firestore';
 import { db } from './config';
 import { Recipe } from '../types';
 import { Meal } from '../types';
 
-// Add a recipe to Firestore
+
 export const addRecipe = async (userId: string, meal: Meal) => {
   try {
       const docRef = await addDoc(collection(db, 'recipes'), {
@@ -19,7 +18,7 @@ export const addRecipe = async (userId: string, meal: Meal) => {
   }
 };
 
-// Get user recipes from Firestore with real-time updates
+
 export const listenToUserRecipes = (userId: string, callback: (recipes: Recipe[]) => void) => {
     const q = query(collection(db, 'recipes'), where('userId', '==', userId));
     return onSnapshot(q, (querySnapshot) => {
@@ -33,7 +32,7 @@ export const listenToUserRecipes = (userId: string, callback: (recipes: Recipe[]
     });
 };
 
-// Delete a recipe from Firestore
+
 
 export const deleteRecipe = async (recipeId: string) => {
     try {
