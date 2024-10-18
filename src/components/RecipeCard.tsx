@@ -20,6 +20,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ meal }) => {
   >
     <div className="flex flex-col h-full overflow-hidden">
       <img
+      loading="lazy"
         src={meal.strMealThumb}
         alt={meal.strMeal}
         className="w-full h-full object-cover rounded-t-lg transition-transform duration-300 transform group-hover:scale-105 will-change-transform"

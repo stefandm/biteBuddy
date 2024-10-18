@@ -38,6 +38,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
         </h2>
         <div className="flex-col flex md:flex-row justify-evenly items-center w-full">
           <img
+          loading="lazy"
             src={selectedMeal.strMealThumb}
             alt={selectedMeal.strMeal}
             className="w-auto flex-1 object-cover h-[40vh] md:h-auto md:w-[40vw] lg:max-h-[60vh] lg:max-w-[60vw] rounded-lg border-slate-100 "
