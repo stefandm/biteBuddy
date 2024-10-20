@@ -18,6 +18,7 @@ import SkeletonList from './components/SkeletonList';
 import logoIMG from '/images/logoAndName.jpg';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import default styles
+import Spinner from './components/Spinner';
 
 const AppContent: React.FC = () => {
   const { user, signIn, signOutUser } = useAuthContext();
@@ -49,6 +50,10 @@ const AppContent: React.FC = () => {
       await addRecipeToUser(selectedMeal);
     }
   };
+
+  if(isLoadingRandomMeals || isLoadingRecommendations){
+    return <Spinner/>
+  }
 
   return (
     <div className="flex flex-col bg-slate-900 font-body font-main md:flex-row min-h-screen">
