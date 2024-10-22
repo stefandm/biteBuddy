@@ -21,56 +21,50 @@ const SearchBar: React.FC = () => {
   const { selectMeal, clearSelectedMeal } = useSelectedMealContext();
 
   const suggestionsRef = useRef<HTMLUListElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null); // Ref to the input element
+  const inputRef = useRef<HTMLInputElement>(null); 
 
-  // Handle clicks outside the suggestions dropdown to close it
   useClickOutside({
     ref: suggestionsRef,
     handler: () => setSuggestions([]),
   });
 
-  // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent page reload
-    await handleSearch(); // Perform the search
-    clearSelectedMeal(); // Close the ExpandedRecipeCard
-    setSuggestions([]); // Clear suggestions
-    setQuery(''); // Clear search input
-    inputRef.current?.blur(); // Dismiss the keyboard by blurring the input
+    e.preventDefault(); 
+    await handleSearch(); 
+    clearSelectedMeal();
+    setSuggestions([]); 
+    setQuery(''); 
+    inputRef.current?.blur(); 
   };
 
-  // Function to handle suggestion clicks
   const handleSuggestionClick = (suggestion: Meal) => {
-    selectMeal(suggestion); // Set the selected meal to display ExpandedRecipeCard
-    setSuggestions([]); // Clear the suggestions to hide them
-    setQuery(''); // Clear the search input
-    inputRef.current?.blur(); // Dismiss the keyboard if open
+    selectMeal(suggestion);
+    setSuggestions([]); 
+    setQuery(''); 
+    inputRef.current?.blur(); 
   };
 
-  // Handle key down events directly in the component
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Escape') {
       handleSearchKeyDown(e, () => {
         clearSelectedMeal();
-        inputRef.current?.blur(); // Dismiss the keyboard
+        inputRef.current?.blur();
       });
     }
-    // Do not handle 'Enter' key here to allow form submission
   };
 
   return (
     <div className="relative mb-8 w-full md:max-w-md font-secondary">
-      {/* Wrap the input and button in a form */}
       <form onSubmit={handleSubmit}>
         <div className="mt-6 flex flex-col">
           <div className="flex">
             <input
-              type="search" // Changed from "text" to "search"
+              type="search"
               placeholder="Search for a meal"
               value={query}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              ref={inputRef} // Assign the ref to the input
+              ref={inputRef}
               className="px-2 py-1 border bg-slate-100 border-gray-400 flex-1 rounded-l-lg focus:outline-none"
               aria-autocomplete="list"
               aria-controls="search-suggestions"
@@ -79,10 +73,10 @@ const SearchBar: React.FC = () => {
               aria-activedescendant={
                 highlightedIndex >= 0 ? `suggestion-${highlightedIndex}` : undefined
               }
-              enterKeyHint="search" // Hint to display 'Search' on the keyboard
+              enterKeyHint="search" 
             />
             <button
-              type="submit" // Changed from "button" to "submit"
+              type="submit" 
               className="px-2 py-1 bg-orange-700 text-white hover:bg-orange-900 rounded-r-lg"
               aria-label="Search"
             >
@@ -117,7 +111,6 @@ const SearchBar: React.FC = () => {
       </form>
 
 
-      {/* Suggestions Dropdown */}
       {suggestions.length > 0 && (
         <ul
           ref={suggestionsRef}

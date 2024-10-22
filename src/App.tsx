@@ -51,24 +51,22 @@ const AppContent: React.FC = () => {
     }
   };
 
-  if(isLoadingRandomMeals || isLoadingRecommendations){
+  if(isLoadingRandomMeals || isLoadingRecommendations ){
     return <Spinner/>
   }
 
   return (
-    <div className="flex flex-col bg-slate-900 font-body font-main md:flex-row min-h-screen">
-      {/* Sidebar with user info and saved recipes */}
+    <div className="flex flex-col bg-slate-800 font-body font-main md:flex-row min-h-screen">
       <div
         className="border-b md:border-r border-orange-300 p-4 overflow-auto
         md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[14vw]
         relative flex-shrink-"
       >
         <img
-          className="hidden md:inline-block h-auto w-auto object-cover mb-8 scale-[80%] rounded-[20%]"
+          className="hidden md:inline-block h-auto w-auto object-cover mb-8 scale-[80%] rounded-xl"
           src={logoIMG}
           alt="Logo"
         />
-        {/* User authentication section */}
         {user ? (
           <div className="flex flex-col items-center gap-4">
             <h1 className="text-3xl  text-orange-300 text-center font-bold">
@@ -95,24 +93,19 @@ const AppContent: React.FC = () => {
           </div>
         )}
 
-        {/* Saved Recipes */}
         {userRecipes.length > 0 && <SavedRecipes />}
       </div>
 
-      {/* Main content */}
       <div className="flex-1 px-6 md:px-8 overflow-auto">
         {/* Reference for scrolling to top */}
         <div ref={scrollToTopRef}></div>
 
-        {/* Search Bar */}
         <SearchBar />
 
-        {/* Selected Meal or Search Results */}
         {selectedMeal ? (
           <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />
         ) : (
           <>
-            {/* Search Results */}
             {isLoadingSearchResults ? (
               <SkeletonList/>
             ) : searchResults.length > 0 ? (
@@ -124,7 +117,6 @@ const AppContent: React.FC = () => {
               </>
             ) : (
               <>
-                {/* Recommendations */}
                 {recommendations.length > 0 && (
                   <>
                     <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
@@ -138,7 +130,6 @@ const AppContent: React.FC = () => {
                   </>
                 )}
 
-                {/* Need inspiration */}
                 <>
                   <h2 className="text-4xl  font-bold my-[5vh] text-center text-orange-300 ">
                     In need of inspiration?
@@ -171,15 +162,15 @@ const App: React.FC = () => {
       </UserRecipesProvider>
     </AuthProvider>
     <ToastContainer
-        position="bottom-center"      // Position of the toast
-        autoClose={1500}          // Duration before auto-close (in ms)
-        hideProgressBar={true}   // Show progress bar
-        newestOnTop={false}       // New toasts appear at the bottom
-        closeOnClick              // Close toast on click
-        rtl={false}               // Left-to-right layout
-        pauseOnFocusLoss          // Pause toast on focus loss
-        draggable                 // Allow dragging to dismiss
-        theme="dark"             // Theme: 'light', 'dark', or 'colored'
+        position="bottom-center"     
+        autoClose={1500}      
+        hideProgressBar={true}  
+        newestOnTop={false}       
+        closeOnClick            
+        rtl={false}              
+        pauseOnFocusLoss       
+        draggable                
+        theme="dark"          
       />
     </>
   );

@@ -15,7 +15,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ meal }) => {
 
   return (
     <div
-    className="group rounded-lg flex flex-col hover:cursor-pointer overflow-hidden"
+    className="group flex flex-col rounded-xl hover:cursor-pointer overflow-hidden"
     onClick={handleClick}
   >
     <div className="flex flex-col h-full overflow-hidden">
@@ -27,7 +27,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ meal }) => {
       />
     </div>
     <div
-      className="py-2 w-full flex items-center justify-center text-center px-2 rounded-b-lg text-orange-950 md:text-xl bg-orange-300 group-hover:bg-orange-800 group-hover:text-white hover:cursor-pointer"
+      className="py-2   w-full flex items-center justify-center text-center px-2 rounded-b-sm  md:text-2xl bg-orange-300 group-hover:bg-orange-800 group-hover:text-white hover:cursor-pointer"
     >
       {meal.strMeal}
     </div>
