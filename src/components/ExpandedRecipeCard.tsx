@@ -15,12 +15,11 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
 
   if (!selectedMeal) return null;
 
-  // Extract ingredients
   const ingredients = INGREDIENT_KEYS
     .map((key) => selectedMeal[key as IngredientKey])
     .filter((ingredient): ingredient is string => Boolean(ingredient));
 
-  // Format instructions
+
   const instructions = selectedMeal.strInstructions
     ? selectedMeal.strInstructions.split('.').map((sentence: string, index: number) => (
         <React.Fragment key={index}>

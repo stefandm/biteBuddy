@@ -1,8 +1,6 @@
-// types.ts (or another appropriate file)
 import { User as FirebaseUser } from "firebase/auth";
 
 export interface User extends FirebaseUser {
-  // Match Firebase User type definitions
   displayName: string | null;
   photoURL: string | null;
 }
@@ -19,9 +17,8 @@ export const INGREDIENT_KEYS = [
 ] as const;
 
 export type IngredientKey = typeof INGREDIENT_KEYS[number];
-// src/types.ts
 export interface Recipe {
-  id: string; // Firestore document ID
+  id: string; 
   meal: {
     idMeal: string;
     strMeal: string;

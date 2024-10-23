@@ -15,7 +15,6 @@ export const searchMeals = async (
   return data;
 };
 
-// lookup meal details by ID
 export const lookupMeal = async (idMeal: string): Promise<Meal> => {
   const response = await fetch(`${API_BASE_URL}/lookup.php?i=${idMeal}`);
   if (!response.ok) {
