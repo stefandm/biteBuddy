@@ -17,6 +17,7 @@ const SearchBar: React.FC = () => {
     handleSearchKeyDown,
     setSuggestions,
     setQuery,
+    setHighlightedIndex,
   } = useSearch();
 
   const { selectMeal, clearSelectedMeal } = useSelectedMeal();
@@ -35,6 +36,7 @@ const SearchBar: React.FC = () => {
     clearSelectedMeal();
     setSuggestions([]);
     setQuery('');
+    setHighlightedIndex(-1); // Reset highlighted index on submit
     inputRef.current?.blur();
   };
 
@@ -42,6 +44,7 @@ const SearchBar: React.FC = () => {
     selectMeal(suggestion);
     setSuggestions([]);
     setQuery('');
+    setHighlightedIndex(-1); // Reset highlighted index on selection
     inputRef.current?.blur();
   };
 

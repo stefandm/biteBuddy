@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { UserRecipesProvider, useUserRecipes } from './contexts/UserRecipesContext';
@@ -15,7 +14,6 @@ import Modal from './components/Modal'; // Import the Modal component
 import logoIMG from '/images/logoAndName.jpg';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Spinner from './components/Spinner';
 
 const AppContent: React.FC = () => {
   const { user, signIn, signOutUser } = useAuth();
@@ -24,13 +22,11 @@ const AppContent: React.FC = () => {
     userRecipes,
     addRecipeToUser,
     recommendations,
-    isLoadingRecommendations,
     randomMeals,
-    isLoadingRandomMeals,
   } = useUserRecipes();
   const {
     searchResults,
-    isLoadingSearchResults,
+    isLoadingSearchResults, // Added for loading state
   } = useSearch();
 
   useEffect(() => {
@@ -45,14 +41,9 @@ const AppContent: React.FC = () => {
   const handleAddRecipe = async () => {
     if (selectedMeal) {
       await addRecipeToUser(selectedMeal);
-      clearSelectedMeal(); // Close the Modal
-      // The searchResults are already present and will be displayed
+      clearSelectedMeal(); 
     }
   };
-
-  if (isLoadingRandomMeals || isLoadingRecommendations) {
-    return <Spinner />;
-  }
 
   return (
     <div className="flex flex-col bg-slate-800 font-body font-main md:flex-row min-h-screen">
@@ -96,12 +87,10 @@ const AppContent: React.FC = () => {
       </div>
 
       <div className="flex-1 px-6 md:px-8 mb-10 overflow-auto">
-        {/* Reference for scrolling to top */}
         <div ref={scrollToTopRef}></div>
 
         <SearchBar />
 
-        {/* Render Recipe Lists */}
         {!selectedMeal && (
           <>
             {isLoadingSearchResults ? (
@@ -124,18 +113,19 @@ const AppContent: React.FC = () => {
                   </>
                 )}
 
-                <>
-                  <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
-                    In Need of Inspiration?
-                  </h2>
-                  <RecipeList meals={randomMeals} itemsPerPage={12} />
-                </>
+                {randomMeals.length > 0 && (
+                  <>
+                    <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
+                      In Need of Inspiration?
+                    </h2>
+                    <RecipeList meals={randomMeals} itemsPerPage={12} />
+                  </>
+                )}
               </>
             )}
           </>
         )}
 
-        {/* Render Modal if a meal is selected */}
         <Modal isOpen={!!selectedMeal} onClose={clearSelectedMeal}>
           {selectedMeal && (
             <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />
