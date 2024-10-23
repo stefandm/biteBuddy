@@ -1,4 +1,3 @@
-// src/components/RecipeList.tsx
 import React from 'react';
 import { Meal } from '../types';
 import RecipeCard from './RecipeCard';

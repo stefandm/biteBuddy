@@ -1,4 +1,3 @@
-// src/components/Modal.tsx
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import useClickOutside from '../hooks/useClickOutside';

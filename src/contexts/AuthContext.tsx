@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.tsx
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { auth, provider } from '../firebase/config';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';

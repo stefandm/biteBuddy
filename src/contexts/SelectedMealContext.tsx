@@ -1,4 +1,3 @@
-// src/contexts/SelectedMealContext.tsx
 import React, { createContext, useState, useRef, useContext, ReactNode } from 'react';
 import { Meal } from '../types';
 
@@ -37,7 +36,6 @@ export const SelectedMealProvider: React.FC<{ children: ReactNode }> = ({ childr
   );
 };
 
-// Custom hook to use SelectedMealContext
 export const useSelectedMeal = (): SelectedMealContextProps => {
   const context = useContext(SelectedMealContext);
   if (context === undefined) {

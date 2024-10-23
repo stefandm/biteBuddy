@@ -1,4 +1,3 @@
-// src/components/SearchBar.tsx
 import React, { useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
 import { useSearch } from '../contexts/SearchContext';
@@ -36,7 +35,7 @@ const SearchBar: React.FC = () => {
     clearSelectedMeal();
     setSuggestions([]);
     setQuery('');
-    setHighlightedIndex(-1); // Reset highlighted index on submit
+    setHighlightedIndex(-1); 
     inputRef.current?.blur();
   };
 
@@ -44,7 +43,7 @@ const SearchBar: React.FC = () => {
     selectMeal(suggestion);
     setSuggestions([]);
     setQuery('');
-    setHighlightedIndex(-1); // Reset highlighted index on selection
+    setHighlightedIndex(-1); 
     inputRef.current?.blur();
   };
 

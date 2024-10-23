@@ -27,7 +27,6 @@ export const lookupMeal = async (idMeal: string): Promise<Meal> => {
   return data.meals[0];
 };
 
-// Function to fetch a random meal
 export const fetchRandomMeal = async (): Promise<Meal | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/random.php`);

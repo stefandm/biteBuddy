@@ -9,7 +9,7 @@ import SavedRecipes from './components/SavedRecipes';
 import RecipeList from './components/RecipeList';
 import ExpandedRecipeCard from './components/ExpandedRecipeCard';
 import SkeletonList from './components/SkeletonList';
-import Modal from './components/Modal'; // Import the Modal component
+import Modal from './components/Modal'; 
 
 import logoIMG from '/images/logoAndName.jpg';
 import { ToastContainer } from 'react-toastify';
@@ -21,12 +21,11 @@ const AppContent: React.FC = () => {
   const {
     userRecipes,
     addRecipeToUser,
-    recommendations,
     randomMeals,
   } = useUserRecipes();
   const {
     searchResults,
-    isLoadingSearchResults, // Added for loading state
+    isLoadingSearchResults, 
   } = useSearch();
 
   useEffect(() => {
@@ -93,15 +92,6 @@ const AppContent: React.FC = () => {
 
         {!selectedMeal && (
           <>
-          
-          {randomMeals.length > 0 && (
-                  <>
-                    <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
-                      In Need of Inspiration?
-                    </h2>
-                    <RecipeList meals={randomMeals} itemsPerPage={12} />
-                  </>
-                )}
             {isLoadingSearchResults ? (
               <SkeletonList />
             ) : searchResults.length > 0 ? (
@@ -113,15 +103,15 @@ const AppContent: React.FC = () => {
               </>
             ) : (
               <>
-                {recommendations.length > 0 && (
+              
+              {randomMeals.length > 0 && (
                   <>
                     <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
-                      Based on Your Taste
+                      In Need of Inspiration?
                     </h2>
-                    <RecipeList meals={recommendations} itemsPerPage={8} />
+                    <RecipeList meals={randomMeals} itemsPerPage={12} />
                   </>
                 )}
-
               </>
             )}
           </>

@@ -1,4 +1,3 @@
-// src/contexts/SearchContext.tsx
 import React, { createContext, useState, useCallback, useContext, ReactNode } from 'react';
 import { Meal } from '../types';
 import { searchMeals, lookupMeal, fetchRandomMeal } from '../api/mealapi';
@@ -39,13 +38,12 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [searchResults, setSearchResults] = useState<Meal[]>([]);
   const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
   const [isLoadingMoreResults, setIsLoadingMoreResults] = useState<boolean>(false);
-  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); // Added highlightedIndex state
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); 
 
-  // Handle input changes and fetch suggestions
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputQuery = e.target.value;
     setQuery(inputQuery);
-    setHighlightedIndex(-1); // Reset highlighted index on input change
+    setHighlightedIndex(-1); 
 
     if (inputQuery.length > 2) {
       try {
@@ -61,7 +59,6 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   };
 
-  // Handle the initial search
   const handleSearch = useCallback(async () => {
     if (query.trim() === '') {
       setSearchResults([]);
@@ -92,31 +89,26 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setIsLoadingSearchResults(false);
       setSuggestions([]);
       setQuery('');
-      setHighlightedIndex(-1); // Reset highlighted index after search
+      setHighlightedIndex(-1); 
     }
   }, [query, searchType, userRecipes]);
 
-  // Handle search type changes
   const handleSearchTypeChange = (type: 'recipe' | 'ingredient') => {
     setSearchType(type);
   };
 
-  // Handle keyboard events in the search input
   const handleSearchKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     onSearchPerformed?: () => void
   ): void => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent form submission
-
+      e.preventDefault(); 
       if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
-        // Select the highlighted suggestion
         selectMeal(suggestions[highlightedIndex]);
         setSuggestions([]);
         setQuery('');
         setHighlightedIndex(-1);
       } else {
-        // No suggestion is highlighted; perform search
         handleSearch();
         setSuggestions([]);
         setQuery('');
@@ -130,24 +122,23 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setQuery('');
       setHighlightedIndex(-1);
     } else if (e.key === 'ArrowDown') {
-      e.preventDefault(); // Prevent cursor from moving to the end
+      e.preventDefault(); 
       setHighlightedIndex((prevIndex) =>
         prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
       );
     } else if (e.key === 'ArrowUp') {
-      e.preventDefault(); // Prevent cursor from moving to the start
+      e.preventDefault(); 
       setHighlightedIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
       );
     }
   };
 
-  // Fetch more results when "Load More" is pressed
   const fetchMoreResults = async () => {
     try {
       setIsLoadingMoreResults(true);
       const additionalMeals: Meal[] = [];
-      const fetchCount = 5; // Number of meals to fetch each time
+      const fetchCount = 5; 
 
       for (let i = 0; i < fetchCount; i++) {
         const meal = await fetchRandomMeal();
@@ -179,9 +170,9 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         searchResults,
         isLoadingSearchResults,
         isLoadingMoreResults,
-        highlightedIndex, // Provided to context
-        setHighlightedIndex, // Provided to context
-        setQuery, // Provided to context
+        highlightedIndex, 
+        setHighlightedIndex, 
+        setQuery, 
         handleInputChange,
         handleSearch,
         handleSearchTypeChange,
@@ -195,7 +186,6 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   );
 };
 
-// Custom hook to use SearchContext
 export const useSearch = (): SearchContextProps => {
   const context = useContext(SearchContext);
   if (context === undefined) {

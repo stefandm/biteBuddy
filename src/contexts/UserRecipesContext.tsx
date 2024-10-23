@@ -1,20 +1,18 @@
-// src/contexts/UserRecipesContext.tsx
 import React, { createContext, useState, useEffect, useCallback, useRef, useContext, ReactNode } from 'react';
 import { addRecipe, listenToUserRecipes } from '../firebase/firestoreService';
-import { searchMeals, fetchRandomMeal } from '../api/mealapi';
-import { Meal, Recipe, INGREDIENT_KEYS, IngredientKey } from '../types';
+import {
+    fetchRandomMeal } from '../api/mealapi';
+import { Meal, Recipe } from '../types';
 import { useAuth } from './AuthContext';
 import { toast } from 'react-toastify';
 import { writeBatch, doc } from 'firebase/firestore';
 import debounce from 'lodash/debounce';
-import { db } from '../firebase/config'; // Ensure correct import of Firestore instance
+import { db } from '../firebase/config'; 
 
 interface UserRecipesContextProps {
   userRecipes: Recipe[];
   addRecipeToUser: (meal: Meal) => Promise<void>;
   deleteRecipeFromUser: (recipeId: string) => void;
-  recommendations: Meal[];
-  isLoadingRecommendations: boolean;
   randomMeals: Meal[];
   isLoadingRandomMeals: boolean;
 }
@@ -24,15 +22,11 @@ const UserRecipesContext = createContext<UserRecipesContextProps | undefined>(un
 export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [userRecipes, setUserRecipes] = useState<Recipe[]>([]);
-  const [recommendations, setRecommendations] = useState<Meal[]>([]);
-  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState<boolean>(false);
   const [randomMeals, setRandomMeals] = useState<Meal[]>([]);
   const [isLoadingRandomMeals, setIsLoadingRandomMeals] = useState<boolean>(false);
 
-  // Ref to store pending deletions
   const pendingDeletionsRef = useRef<Set<string>>(new Set());
 
-  // Debounced batch delete function
   const debouncedBatchDelete = useRef(
     debounce(async () => {
       const deletions = Array.from(pendingDeletionsRef.current);
@@ -53,10 +47,9 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
       } finally {
         pendingDeletionsRef.current.clear();
       }
-    }, 300) // Debounce delay in milliseconds
+    }, 300) 
   ).current;
 
-  // Function to handle deletion with debounce
   const deleteRecipeFromUser = (recipeId: string) => {
     if (!user) {
       toast.error('You must be signed in to delete a recipe.');
@@ -89,54 +82,6 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
       toast.error('You must be signed in to save a recipe.');
     }
   };
-
-  const generateRecommendations = useCallback(async (recipes: Recipe[]) => {
-    if (recipes.length === 0) {
-      setRecommendations([]);
-      return;
-    }
-
-    const ingredients = recipes
-      .flatMap((recipe) =>
-        INGREDIENT_KEYS
-          .map((key) => recipe.meal[key as IngredientKey])
-          .filter((value): value is string => value !== null && value !== '' && typeof value === 'string')
-      );
-
-    if (ingredients.length > 0) {
-      setIsLoadingRecommendations(true);
-      const uniqueIngredients = [...new Set(ingredients)];
-      const recommendedMeals: Meal[] = [];
-
-      for (const ingredient of uniqueIngredients.slice(3, uniqueIngredients.length)) {
-        try {
-          const response = await searchMeals(ingredient);
-          if (response.meals) {
-            const filteredResults = response.meals.filter(
-              (meal) => !recipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
-            );
-            recommendedMeals.push(...filteredResults);
-          }
-        } catch (error) {
-          console.error('Error fetching meals:', error);
-          toast.error('Failed to fetch meal recommendations.');
-        }
-      }
-
-      const uniqueMeals = Array.from(
-        new Map(recommendedMeals.map((meal) => [meal.idMeal, meal])).values()
-      );
-
-      const filteredRecommendations = uniqueMeals.filter(
-        (meal) => !recipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
-      );
-
-      setRecommendations(filteredRecommendations);
-      setIsLoadingRecommendations(false);
-    } else {
-      setRecommendations([]);
-    }
-  }, []);
 
   const fetchRandomMealsExcludingUserRecipes = useCallback(async () => {
     setIsLoadingRandomMeals(true);
@@ -172,13 +117,8 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
       return () => unsubscribeRecipes();
     } else {
       setUserRecipes([]);
-      setRecommendations([]);
     }
   }, [user]);
-
-  useEffect(() => {
-    generateRecommendations(userRecipes);
-  }, [userRecipes, generateRecommendations]);
 
   const hasFetchedRandomMeals = useRef(false);
 
@@ -195,8 +135,6 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
         userRecipes,
         addRecipeToUser,
         deleteRecipeFromUser,
-        recommendations,
-        isLoadingRecommendations,
         randomMeals,
         isLoadingRandomMeals,
       }}
@@ -206,7 +144,6 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
   );
 };
 
-// Custom hook to use UserRecipesContext
 export const useUserRecipes = (): UserRecipesContextProps => {
   const context = useContext(UserRecipesContext);
   if (context === undefined) {
