@@ -2,7 +2,7 @@
 import React, { createContext, useState, useCallback, useContext, ReactNode } from 'react';
 import { Meal } from '../types';
 import { searchMeals, lookupMeal } from '../api/mealapi';
-import { useUserRecipes }  from './UserRecipesContext';
+import { useUserRecipes } from './UserRecipesContext';
 import { useSelectedMeal } from './SelectedMealContext';
 
 interface SearchContextProps {
@@ -79,7 +79,7 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
       const filteredResults = detailedResults.filter(
         (meal: Meal) =>
-          !userRecipes.some((recipe: { meal: { idMeal: string; }; }) => recipe.meal.idMeal === meal.idMeal)
+          !userRecipes.some((recipe) => recipe.meal.idMeal === meal.idMeal)
       );
 
       setSearchResults(filteredResults);
@@ -102,11 +102,15 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     onSearchPerformed?: () => void
   ): void => {
     if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent form submission
+
       if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
+        // Select the highlighted suggestion
         selectMeal(suggestions[highlightedIndex]);
         setSuggestions([]);
         setQuery('');
       } else {
+        // No suggestion is highlighted; perform search
         handleSearch();
         setSuggestions([]);
         setQuery('');
@@ -118,12 +122,12 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setSuggestions([]);
       setQuery('');
     } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
+      e.preventDefault(); // Prevent cursor from moving to the end
       setHighlightedIndex((prevIndex) =>
         prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
       );
     } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
+      e.preventDefault(); // Prevent cursor from moving to the start
       setHighlightedIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
       );

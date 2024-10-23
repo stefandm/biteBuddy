@@ -46,12 +46,10 @@ const SearchBar: React.FC = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Escape') {
-      handleSearchKeyDown(e, () => {
-        clearSelectedMeal();
-        inputRef.current?.blur();
-      });
-    }
+    handleSearchKeyDown(e, () => {
+      clearSelectedMeal();
+      inputRef.current?.blur();
+    });
   };
 
   return (

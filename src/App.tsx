@@ -44,6 +44,8 @@ const AppContent: React.FC = () => {
   const handleAddRecipe = async () => {
     if (selectedMeal) {
       await addRecipeToUser(selectedMeal);
+      clearSelectedMeal(); // Close the ExpandedRecipeCard
+      // The searchResults are already present and will be displayed
     }
   };
 
@@ -109,32 +111,24 @@ const AppContent: React.FC = () => {
                 <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
                   Search Results
                 </h2>
-                <RecipeList meals={searchResults} />
+                <RecipeList meals={searchResults} itemsPerPage={12} />
               </>
             ) : (
               <>
                 {recommendations.length > 0 && (
                   <>
                     <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
-                      Based on your taste
+                      Based on Your Taste
                     </h2>
-                    {isLoadingRecommendations ? (
-                      <SkeletonList />
-                    ) : (
-                      <RecipeList meals={recommendations} />
-                    )}
+                    <RecipeList meals={recommendations} itemsPerPage={8} />
                   </>
                 )}
 
                 <>
                   <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
-                    In need of inspiration?
+                    In Need of Inspiration?
                   </h2>
-                  {isLoadingRandomMeals ? (
-                    <SkeletonList />
-                  ) : (
-                    <RecipeList meals={randomMeals} />
-                  )}
+                  <RecipeList meals={randomMeals} itemsPerPage={12} />
                 </>
               </>
             )}

@@ -28,7 +28,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ meal }) => {
         />
       </div>
       <div
-        className="py-2 w-full flex items-center justify-center text-center px-2 rounded-b-sm md:text-2xl bg-orange-300 group-hover:bg-orange-800 group-hover:text-white hover:cursor-pointer"
+        className="py-2 w-full flex items-center justify-center text-center px-2 rounded-b-sm md:text-2xl bg-orange-300 group-hover:bg-orange-800 group-hover:text-white"
       >
         {meal.strMeal}
       </div>
