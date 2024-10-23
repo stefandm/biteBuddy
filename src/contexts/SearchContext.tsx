@@ -1,12 +1,10 @@
 // src/contexts/SearchContext.tsx
-import React, { createContext, useState, useCallback, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useCallback, useContext, ReactNode } from 'react';
 import { Meal } from '../types';
 import { searchMeals, lookupMeal, fetchRandomMeal } from '../api/mealapi';
 import { useUserRecipes } from './UserRecipesContext';
 import { useSelectedMeal } from './SelectedMealContext';
 import { toast } from 'react-toastify';
-import useDebounce from '../hooks/useDebounce';
-
 
 interface SearchContextProps {
   query: string;
@@ -150,23 +148,19 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setIsLoadingMoreResults(true);
       const additionalMeals: Meal[] = [];
       const fetchCount = 5; // Number of meals to fetch each time
-      const existingMealIds = new Set(searchResults.map((meal) => meal.idMeal).concat(userRecipes.map((recipe) => recipe.meal.idMeal)));
-  
-      while (additionalMeals.length < fetchCount) {
+
+      for (let i = 0; i < fetchCount; i++) {
         const meal = await fetchRandomMeal();
-        if (meal && !existingMealIds.has(meal.idMeal) && !additionalMeals.some((m) => m.idMeal === meal.idMeal)) {
+        if (meal && !searchResults.some((m) => m.idMeal === meal.idMeal)) {
           additionalMeals.push(meal);
-          existingMealIds.add(meal.idMeal);
         }
-        // Optional: Add a break condition to prevent infinite loops
-        // e.g., after a certain number of attempts
       }
-  
+
       if (additionalMeals.length === 0) {
         toast.info('No more unique recipes found.');
         return;
       }
-  
+
       setSearchResults((prevResults) => [...prevResults, ...additionalMeals]);
     } catch (error) {
       console.error('Error fetching more results:', error);
@@ -176,26 +170,6 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   };
 
-  const debouncedQuery = useDebounce(query, 300); // 300ms debounce
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (debouncedQuery.length > 2) {
-        try {
-          const response = await searchMeals(debouncedQuery, searchType === 'ingredient');
-          const results = response.meals || [];
-          setSuggestions(results.slice(0, 5));
-        } catch (error) {
-          console.error('Error fetching suggestions:', error);
-          setSuggestions([]);
-        }
-      } else {
-        setSuggestions([]);
-      }
-    };
-  
-    fetchSuggestions();
-  }, [debouncedQuery, searchType]);
-  
   return (
     <SearchContext.Provider
       value={{

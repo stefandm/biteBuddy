@@ -1,20 +1,22 @@
 // src/contexts/UserRecipesContext.tsx
 import React, { createContext, useState, useEffect, useCallback, useRef, useContext, ReactNode } from 'react';
-import { addRecipe, deleteRecipe, listenToUserRecipes } from '../firebase/firestoreService';
-import { API_BASE_URL, searchMeals } from '../api/mealapi';
-import { Meal, Recipe, INGREDIENT_KEYS, IngredientKey, ApiResponse } from '../types';
+import { addRecipe, listenToUserRecipes } from '../firebase/firestoreService';
+import { searchMeals, fetchRandomMeal } from '../api/mealapi';
+import { Meal, Recipe, INGREDIENT_KEYS, IngredientKey } from '../types';
 import { useAuth } from './AuthContext';
 import { toast } from 'react-toastify';
+import { writeBatch, doc } from 'firebase/firestore';
+import debounce from 'lodash/debounce';
+import { db } from '../firebase/config'; // Ensure correct import of Firestore instance
 
 interface UserRecipesContextProps {
   userRecipes: Recipe[];
   addRecipeToUser: (meal: Meal) => Promise<void>;
-  deleteRecipeFromUser: (recipeId: string) => Promise<void>;
+  deleteRecipeFromUser: (recipeId: string) => void;
   recommendations: Meal[];
   isLoadingRecommendations: boolean;
   randomMeals: Meal[];
   isLoadingRandomMeals: boolean;
-  
 }
 
 const UserRecipesContext = createContext<UserRecipesContextProps | undefined>(undefined);
@@ -27,7 +29,67 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [randomMeals, setRandomMeals] = useState<Meal[]>([]);
   const [isLoadingRandomMeals, setIsLoadingRandomMeals] = useState<boolean>(false);
 
-  // Generates recommendations based on user's saved recipes
+  // Ref to store pending deletions
+  const pendingDeletionsRef = useRef<Set<string>>(new Set());
+
+  // Debounced batch delete function
+  const debouncedBatchDelete = useRef(
+    debounce(async () => {
+      const deletions = Array.from(pendingDeletionsRef.current);
+      if (deletions.length === 0) return;
+
+      const batch = writeBatch(db);
+      deletions.forEach((recipeId) => {
+        const recipeDoc = doc(db, 'recipes', recipeId);
+        batch.delete(recipeDoc);
+      });
+
+      try {
+        await batch.commit();
+        toast.success('Recipes deleted successfully');
+      } catch (error) {
+        console.error('Error deleting recipes:', error);
+        toast.error('Failed to delete recipes.');
+      } finally {
+        pendingDeletionsRef.current.clear();
+      }
+    }, 300) // Debounce delay in milliseconds
+  ).current;
+
+  // Function to handle deletion with debounce
+  const deleteRecipeFromUser = (recipeId: string) => {
+    if (!user) {
+      toast.error('You must be signed in to delete a recipe.');
+      return;
+    }
+
+    pendingDeletionsRef.current.add(recipeId);
+    debouncedBatchDelete();
+  };
+
+  const addRecipeToUser = async (meal: Meal) => {
+    if (user) {
+      const isAlreadySaved = userRecipes.some(
+        (recipe) => recipe.meal.idMeal === meal.idMeal
+      );
+
+      if (isAlreadySaved) {
+        toast.info('Recipe is already saved');
+        return;
+      }
+
+      try {
+        await addRecipe(user.uid, meal);
+        toast.success('Recipe saved');
+      } catch (error) {
+        console.error('Error adding recipe:', error);
+        toast.error('Failed to save the recipe.');
+      }
+    } else {
+      toast.error('You must be signed in to save a recipe.');
+    }
+  };
+
   const generateRecommendations = useCallback(async (recipes: Recipe[]) => {
     if (recipes.length === 0) {
       setRecommendations([]);
@@ -83,16 +145,13 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
       const randomMealsList: Meal[] = [];
 
       while (randomMealsList.length < 8) {
-        const response = await fetch(`${API_BASE_URL}/random.php`);
-        const data: ApiResponse = await response.json();
-        if (data.meals && data.meals.length > 0) {
-          const meal = data.meals[0];
-          if (
-            !fetchedMealIds.has(meal.idMeal) &&
-            !randomMealsList.some((m) => m.idMeal === meal.idMeal)
-          ) {
-            randomMealsList.push(meal);
-          }
+        const meal = await fetchRandomMeal();
+        if (
+          meal &&
+          !fetchedMealIds.has(meal.idMeal) &&
+          !randomMealsList.some((m) => m.idMeal === meal.idMeal)
+        ) {
+          randomMealsList.push(meal);
         }
       }
 
@@ -129,41 +188,6 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
       hasFetchedRandomMeals.current = true;
     }
   }, [fetchRandomMealsExcludingUserRecipes]);
-
-  const addRecipeToUser = async (meal: Meal) => {
-    if (user) {
-      const isAlreadySaved = userRecipes.some(
-        (recipe) => recipe.meal.idMeal === meal.idMeal
-      );
-
-      if (isAlreadySaved) {
-        toast.info('Recipe is already saved');
-        return;
-      }
-
-      try {
-        await addRecipe(user.uid, meal);
-        toast.success('Recipe saved');
-      } catch (error) {
-        console.error('Error adding recipe:', error);
-        toast.error('Failed to save the recipe.');
-      }
-    } else {
-      toast.error('You must be signed in to save a recipe.');
-    }
-  };
-
-  const deleteRecipeFromUser = async (recipeId: string) => {
-    if (user) {
-      try {
-        await deleteRecipe(recipeId);
-        // Optionally, add a success toast
-      } catch (error) {
-        console.error('Error deleting recipe:', error);
-        toast.error('Failed to delete the recipe.');
-      }
-    }
-  };
 
   return (
     <UserRecipesContext.Provider
