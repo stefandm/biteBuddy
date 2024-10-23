@@ -14,6 +14,7 @@ interface UserRecipesContextProps {
   isLoadingRecommendations: boolean;
   randomMeals: Meal[];
   isLoadingRandomMeals: boolean;
+  
 }
 
 const UserRecipesContext = createContext<UserRecipesContextProps | undefined>(undefined);

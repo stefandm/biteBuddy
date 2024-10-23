@@ -16,7 +16,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ meal }) => {
 
   return (
     <div
-      className="group flex flex-col rounded-xl hover:cursor-pointer overflow-hidden"
+      className="group flex flex-col rounded-xl hover:cursor-pointer overflow-hidden  shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]"
       onClick={handleClick}
     >
       <div className="flex flex-col h-full overflow-hidden">

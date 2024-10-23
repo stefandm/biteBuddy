@@ -20,16 +20,16 @@ const RecipeList: React.FC<RecipeListProps> = ({ meals, itemsPerPage }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-16">
         {displayedMeals.map((meal) => (
           <RecipeCard key={meal.idMeal} meal={meal} />
         ))}
       </div>
       {hasMore && (
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-10 pb-4">
           <button
             onClick={handleLoadMore}
-            className="px-4 py-2 bg-orange-700 text-white rounded hover:bg-orange-900 transition-colors duration-300"
+            className="px-20 py-2 bg-orange-700 text-white text-xl rounded hover:bg-orange-900 transition-colors duration-300  shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]"
           >
             Load More
           </button>

@@ -10,6 +10,7 @@ import SavedRecipes from './components/SavedRecipes';
 import RecipeList from './components/RecipeList';
 import ExpandedRecipeCard from './components/ExpandedRecipeCard';
 import SkeletonList from './components/SkeletonList';
+import Modal from './components/Modal'; // Import the Modal component
 
 import logoIMG from '/images/logoAndName.jpg';
 import { ToastContainer } from 'react-toastify';
@@ -44,7 +45,7 @@ const AppContent: React.FC = () => {
   const handleAddRecipe = async () => {
     if (selectedMeal) {
       await addRecipeToUser(selectedMeal);
-      clearSelectedMeal(); // Close the ExpandedRecipeCard
+      clearSelectedMeal(); // Close the Modal
       // The searchResults are already present and will be displayed
     }
   };
@@ -67,7 +68,7 @@ const AppContent: React.FC = () => {
         />
         {user ? (
           <div className="flex flex-col items-center gap-4">
-            <h1 className="text-3xl text-orange-300 text-center font-bold">
+            <h1 className="text-3xl text-orange-300 text-center font-bold [text-shadow:2px_2px_6px_#000000]">
               Welcome, {user.displayName}
             </h1>
             <button
@@ -94,21 +95,20 @@ const AppContent: React.FC = () => {
         {userRecipes.length > 0 && <SavedRecipes />}
       </div>
 
-      <div className="flex-1 px-6 md:px-8 overflow-auto">
+      <div className="flex-1 px-6 md:px-8 mb-10 overflow-auto">
         {/* Reference for scrolling to top */}
         <div ref={scrollToTopRef}></div>
 
         <SearchBar />
 
-        {selectedMeal ? (
-          <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />
-        ) : (
+        {/* Render Recipe Lists */}
+        {!selectedMeal && (
           <>
             {isLoadingSearchResults ? (
               <SkeletonList />
             ) : searchResults.length > 0 ? (
               <>
-                <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
+                <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
                   Search Results
                 </h2>
                 <RecipeList meals={searchResults} itemsPerPage={12} />
@@ -117,7 +117,7 @@ const AppContent: React.FC = () => {
               <>
                 {recommendations.length > 0 && (
                   <>
-                    <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
+                    <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
                       Based on Your Taste
                     </h2>
                     <RecipeList meals={recommendations} itemsPerPage={8} />
@@ -125,7 +125,7 @@ const AppContent: React.FC = () => {
                 )}
 
                 <>
-                  <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
+                  <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
                     In Need of Inspiration?
                   </h2>
                   <RecipeList meals={randomMeals} itemsPerPage={12} />
@@ -134,6 +134,13 @@ const AppContent: React.FC = () => {
             )}
           </>
         )}
+
+        {/* Render Modal if a meal is selected */}
+        <Modal isOpen={!!selectedMeal} onClose={clearSelectedMeal}>
+          {selectedMeal && (
+            <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />
+          )}
+        </Modal>
       </div>
     </div>
   );
