@@ -1,6 +1,7 @@
+// src/components/ExpandedRecipeCard.tsx
 import React from 'react';
 import { INGREDIENT_KEYS, IngredientKey } from '../types';
-import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
+import { useSelectedMeal } from '../contexts/SelectedMealContext';
 
 interface ExpandedRecipeCardProps {
   onAddRecipe: () => void;
@@ -11,14 +12,13 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
   onAddRecipe,
   onClose,
 }) => {
-  const { selectedMeal } = useSelectedMealContext();
+  const { selectedMeal } = useSelectedMeal();
 
   if (!selectedMeal) return null;
 
   const ingredients = INGREDIENT_KEYS
     .map((key) => selectedMeal[key as IngredientKey])
     .filter((ingredient): ingredient is string => Boolean(ingredient));
-
 
   const instructions = selectedMeal.strInstructions
     ? selectedMeal.strInstructions.split('.').map((sentence: string, index: number) => (
@@ -37,10 +37,10 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
         </h2>
         <div className="flex-col flex md:flex-row justify-evenly items-center w-full">
           <img
-          loading="lazy"
+            loading="lazy"
             src={selectedMeal.strMealThumb}
             alt={selectedMeal.strMeal}
-            className="w-auto flex-1 object-cover h-[40vh] md:h-auto md:w-[40vw] lg:max-h-[60vh] lg:max-w-[40vw] rounded-lg border-slate-100 "
+            className="w-auto flex-1 object-cover h-[40vh] md:h-auto md:w-[40vw] lg:max-h-[60vh] lg:max-w-[40vw] rounded-lg border-slate-100"
           />
           <div className="flex flex-col justify-evenly items-center mt-6 px-14 font-secondary">
             <h3 className="text-lg font-semibold mb-2">Ingredients:</h3>
@@ -72,7 +72,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
         </button>
         <button
           onClick={onClose}
-          className="md:py-2 py-1  px-2 md:text-xl  hover:bg-red-800 text-xl bg-red-700 hover:text-white  rounded-br-lg "
+          className="md:py-2 py-1 px-2 md:text-xl hover:bg-red-800 text-xl bg-red-700 hover:text-white rounded-br-lg"
         >
           Close
         </button>

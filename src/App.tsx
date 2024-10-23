@@ -1,13 +1,9 @@
+// src/App.tsx
 import React, { useEffect } from 'react';
-import { AuthProvider } from './contexts/AuthContext';
-import  UserRecipesProvider  from './contexts/UserRecipesProvider';
-import { SearchProvider } from './contexts/SearchProvider';
-import { SelectedMealProvider } from './contexts/SelectedMealContext';
-
-import { useAuthContext } from './hooks/useAuthContext';
-import { useUserRecipesContext } from './hooks/useUserRecipesContext';
-import { useSelectedMealContext } from './hooks/useSelectedMealContext';
-import { useSearchContext } from './hooks/useSearchContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { UserRecipesProvider, useUserRecipes } from './contexts/UserRecipesContext';
+import { SearchProvider, useSearch } from './contexts/SearchContext';
+import { SelectedMealProvider, useSelectedMeal } from './contexts/SelectedMealContext';
 
 import SearchBar from './components/SearchBar';
 import SavedRecipes from './components/SavedRecipes';
@@ -17,12 +13,12 @@ import SkeletonList from './components/SkeletonList';
 
 import logoIMG from '/images/logoAndName.jpg';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import default styles
+import 'react-toastify/dist/ReactToastify.css';
 import Spinner from './components/Spinner';
 
 const AppContent: React.FC = () => {
-  const { user, signIn, signOutUser } = useAuthContext();
-  const { selectedMeal, clearSelectedMeal, scrollToTopRef } = useSelectedMealContext();
+  const { user, signIn, signOutUser } = useAuth();
+  const { selectedMeal, clearSelectedMeal, scrollToTopRef } = useSelectedMeal();
   const {
     userRecipes,
     addRecipeToUser,
@@ -30,11 +26,11 @@ const AppContent: React.FC = () => {
     isLoadingRecommendations,
     randomMeals,
     isLoadingRandomMeals,
-  } = useUserRecipesContext();
+  } = useUserRecipes();
   const {
     searchResults,
     isLoadingSearchResults,
-  } = useSearchContext();
+  } = useSearch();
 
   useEffect(() => {
     if (selectedMeal) {
@@ -51,8 +47,8 @@ const AppContent: React.FC = () => {
     }
   };
 
-  if(isLoadingRandomMeals || isLoadingRecommendations ){
-    return <Spinner/>
+  if (isLoadingRandomMeals || isLoadingRecommendations) {
+    return <Spinner />;
   }
 
   return (
@@ -60,7 +56,7 @@ const AppContent: React.FC = () => {
       <div
         className="border-b md:border-r border-orange-300 p-4 overflow-auto
         md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[14vw]
-        relative flex-shrink-"
+        relative flex-shrink-0"
       >
         <img
           className="hidden md:inline-block h-auto w-auto object-cover mb-8 scale-[80%] rounded-xl"
@@ -69,7 +65,7 @@ const AppContent: React.FC = () => {
         />
         {user ? (
           <div className="flex flex-col items-center gap-4">
-            <h1 className="text-3xl  text-orange-300 text-center font-bold">
+            <h1 className="text-3xl text-orange-300 text-center font-bold">
               Welcome, {user.displayName}
             </h1>
             <button
@@ -107,7 +103,7 @@ const AppContent: React.FC = () => {
         ) : (
           <>
             {isLoadingSearchResults ? (
-              <SkeletonList/>
+              <SkeletonList />
             ) : searchResults.length > 0 ? (
               <>
                 <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
@@ -123,19 +119,19 @@ const AppContent: React.FC = () => {
                       Based on your taste
                     </h2>
                     {isLoadingRecommendations ? (
-                    <SkeletonList/>
-                    ) :  (
+                      <SkeletonList />
+                    ) : (
                       <RecipeList meals={recommendations} />
                     )}
                   </>
                 )}
 
                 <>
-                  <h2 className="text-4xl  font-bold my-[5vh] text-center text-orange-300 ">
+                  <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300">
                     In need of inspiration?
                   </h2>
                   {isLoadingRandomMeals ? (
-                    <SkeletonList/>
+                    <SkeletonList />
                   ) : (
                     <RecipeList meals={randomMeals} />
                   )}
@@ -152,25 +148,25 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <>
-    <AuthProvider>
-      <UserRecipesProvider>
-        <SelectedMealProvider>
-          <SearchProvider>
-            <AppContent />
-          </SearchProvider>
-        </SelectedMealProvider>
-      </UserRecipesProvider>
-    </AuthProvider>
-    <ToastContainer
-        position="bottom-center"     
-        autoClose={1500}      
-        hideProgressBar={true}  
-        newestOnTop={false}       
-        closeOnClick            
-        rtl={false}              
-        pauseOnFocusLoss       
-        draggable                
-        theme="dark"          
+      <AuthProvider>
+        <UserRecipesProvider>
+          <SelectedMealProvider>
+            <SearchProvider>
+              <AppContent />
+            </SearchProvider>
+          </SelectedMealProvider>
+        </UserRecipesProvider>
+      </AuthProvider>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={1500}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        theme="dark"
       />
     </>
   );

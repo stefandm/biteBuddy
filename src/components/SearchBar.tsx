@@ -1,7 +1,8 @@
+// src/components/SearchBar.tsx
 import React, { useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
-import { useSearchContext } from '../hooks/useSearchContext';
-import { useSelectedMealContext } from '../hooks/useSelectedMealContext';
+import { useSearch } from '../contexts/SearchContext';
+import { useSelectedMeal } from '../contexts/SelectedMealContext';
 import { Meal } from '../types';
 
 const SearchBar: React.FC = () => {
@@ -15,13 +16,13 @@ const SearchBar: React.FC = () => {
     handleSearchTypeChange,
     handleSearchKeyDown,
     setSuggestions,
-    setQuery, 
-  } = useSearchContext();
+    setQuery,
+  } = useSearch();
 
-  const { selectMeal, clearSelectedMeal } = useSelectedMealContext();
+  const { selectMeal, clearSelectedMeal } = useSelectedMeal();
 
   const suggestionsRef = useRef<HTMLUListElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null); 
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useClickOutside({
     ref: suggestionsRef,
@@ -29,19 +30,19 @@ const SearchBar: React.FC = () => {
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    await handleSearch(); 
+    e.preventDefault();
+    await handleSearch();
     clearSelectedMeal();
-    setSuggestions([]); 
-    setQuery(''); 
-    inputRef.current?.blur(); 
+    setSuggestions([]);
+    setQuery('');
+    inputRef.current?.blur();
   };
 
   const handleSuggestionClick = (suggestion: Meal) => {
     selectMeal(suggestion);
-    setSuggestions([]); 
-    setQuery(''); 
-    inputRef.current?.blur(); 
+    setSuggestions([]);
+    setQuery('');
+    inputRef.current?.blur();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -73,10 +74,10 @@ const SearchBar: React.FC = () => {
               aria-activedescendant={
                 highlightedIndex >= 0 ? `suggestion-${highlightedIndex}` : undefined
               }
-              enterKeyHint="search" 
+              enterKeyHint="search"
             />
             <button
-              type="submit" 
+              type="submit"
               className="px-2 py-1 bg-orange-700 text-white hover:bg-orange-900 rounded-r-lg"
               aria-label="Search"
             >
@@ -110,7 +111,6 @@ const SearchBar: React.FC = () => {
         </div>
       </form>
 
-
       {suggestions.length > 0 && (
         <ul
           ref={suggestionsRef}
@@ -122,7 +122,7 @@ const SearchBar: React.FC = () => {
             <li
               id={`suggestion-${index}`}
               key={suggestion.idMeal}
-              onClick={() => handleSuggestionClick(suggestion)} 
+              onClick={() => handleSuggestionClick(suggestion)}
               className={`p-2 cursor-pointer hover:bg-gray-200 ${
                 index === highlightedIndex ? 'bg-orange-100' : ''
               }`}
@@ -134,7 +134,6 @@ const SearchBar: React.FC = () => {
           ))}
         </ul>
       )}
-
     </div>
   );
 };

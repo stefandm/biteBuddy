@@ -1,4 +1,5 @@
-import React, { createContext, useState, useRef } from 'react';
+// src/contexts/SelectedMealContext.tsx
+import React, { createContext, useState, useRef, useContext, ReactNode } from 'react';
 import { Meal } from '../types';
 
 interface SelectedMealContextProps {
@@ -10,7 +11,7 @@ interface SelectedMealContextProps {
 
 const SelectedMealContext = createContext<SelectedMealContextProps | undefined>(undefined);
 
-const SelectedMealProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SelectedMealProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const scrollToTopRef = useRef<HTMLDivElement>(null);
 
@@ -36,4 +37,11 @@ const SelectedMealProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-export { SelectedMealContext, SelectedMealProvider };
+// Custom hook to use SelectedMealContext
+export const useSelectedMeal = (): SelectedMealContextProps => {
+  const context = useContext(SelectedMealContext);
+  if (context === undefined) {
+    throw new Error('useSelectedMeal must be used within a SelectedMealProvider');
+  }
+  return context;
+};
