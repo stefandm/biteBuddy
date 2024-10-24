@@ -39,7 +39,6 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
 
       try {
         await batch.commit();
-        toast.success('Recipes deleted successfully');
       } catch (error) {
         console.error('Error deleting recipes:', error);
         toast.error('Failed to delete recipes.');
