@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
-import { useSearch } from '../contexts/SearchContext';
-import { useSelectedMeal } from '../contexts/SelectedMealContext';
+import { useSearch } from '../hooks/useSearch';
+import { useSelectedMeal } from '../hooks/useSelectedMeal';
 import { Meal } from '../types';
 
 const SearchBar: React.FC = () => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Meal } from '../types';
 import RecipeCard from './RecipeCard';
-import { useSearch } from '../contexts/SearchContext';
 
 interface RecipeListProps {
   meals: Meal[];
@@ -10,11 +9,9 @@ interface RecipeListProps {
 }
 
 const RecipeList: React.FC<RecipeListProps> = ({ meals, itemsPerPage, listType = 'searchResults' }) => {
-  const { fetchMoreResults, isLoadingMoreResults } = useSearch();
   const [visibleCount, setVisibleCount] = React.useState<number>(itemsPerPage);
 
-  const handleLoadMore = async () => {
-    await fetchMoreResults();
+  const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + itemsPerPage);
   };
 
@@ -32,12 +29,9 @@ const RecipeList: React.FC<RecipeListProps> = ({ meals, itemsPerPage, listType =
         <div className="flex justify-center mt-10 pb-4">
           <button
             onClick={handleLoadMore}
-            disabled={isLoadingMoreResults}
-            className={`px-20 py-2 bg-orange-700 text-white text-xl rounded hover:bg-orange-900 transition-colors duration-300 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] ${
-              isLoadingMoreResults ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className="px-20 py-2 bg-orange-700 text-white text-xl rounded hover:bg-orange-900 transition-colors duration-300 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]"
           >
-            {isLoadingMoreResults ? 'Loading...' : 'Load More'}
+            Load More
           </button>
         </div>
       )}

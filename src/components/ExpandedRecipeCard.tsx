@@ -1,7 +1,6 @@
-// src/components/ExpandedRecipeCard.tsx
 import React from 'react';
 import { INGREDIENT_KEYS, IngredientKey } from '../types';
-import { useSelectedMeal } from '../contexts/SelectedMealContext';
+import { useSelectedMeal } from '../hooks/useSelectedMeal'; 
 
 interface ExpandedRecipeCardProps {
   onAddRecipe: () => void;

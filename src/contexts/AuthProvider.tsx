@@ -1,15 +1,15 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { auth, provider } from '../firebase/config';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { User } from '../types';
 
-interface AuthContextProps {
+export interface AuthContextProps {
   user: User | null;
   signIn: () => Promise<void>;
   signOutUser: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -42,13 +42,4 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Custom hook to use AuthContext
-export const useAuth = (): AuthContextProps => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

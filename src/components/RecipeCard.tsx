@@ -1,7 +1,6 @@
-// src/components/RecipeCard.tsx
 import React from 'react';
 import { Meal } from '../types';
-import { useSelectedMeal } from '../contexts/SelectedMealContext';
+import { useSelectedMeal } from '../hooks/useSelectedMeal';
 
 interface RecipeCardProps {
   meal: Meal;

@@ -1,17 +1,15 @@
-import React, { createContext, useState, useCallback, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useCallback, ReactNode } from 'react';
 import { Meal } from '../types';
-import { searchMeals, lookupMeal, fetchRandomMeal } from '../api/mealapi';
-import { useUserRecipes } from './UserRecipesContext';
-import { useSelectedMeal } from './SelectedMealContext';
-import { toast } from 'react-toastify';
+import { searchMeals, lookupMeal } from '../api/mealapi';
+import { useUserRecipes } from '../hooks/useUserRecipes';
+import { useSelectedMeal } from '../hooks/useSelectedMeal';
 
-interface SearchContextProps {
+export interface SearchContextProps {
   query: string;
   searchType: 'recipe' | 'ingredient';
   suggestions: Meal[];
   searchResults: Meal[];
   isLoadingSearchResults: boolean;
-  isLoadingMoreResults: boolean;
   highlightedIndex: number;
   setHighlightedIndex: (index: number) => void;
   setQuery: (query: string) => void;
@@ -23,10 +21,9 @@ interface SearchContextProps {
     onSearchPerformed?: () => void
   ) => void;
   setSuggestions: (suggestions: Meal[]) => void;
-  fetchMoreResults: () => Promise<void>;
 }
 
-const SearchContext = createContext<SearchContextProps | undefined>(undefined);
+export const SearchContext = createContext<SearchContextProps | undefined>(undefined);
 
 export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { userRecipes } = useUserRecipes();
@@ -37,7 +34,6 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [suggestions, setSuggestions] = useState<Meal[]>([]);
   const [searchResults, setSearchResults] = useState<Meal[]>([]);
   const [isLoadingSearchResults, setIsLoadingSearchResults] = useState<boolean>(false);
-  const [isLoadingMoreResults, setIsLoadingMoreResults] = useState<boolean>(false);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); 
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,33 +130,6 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   };
 
-  const fetchMoreResults = async () => {
-    try {
-      setIsLoadingMoreResults(true);
-      const additionalMeals: Meal[] = [];
-      const fetchCount = 5; 
-
-      for (let i = 0; i < fetchCount; i++) {
-        const meal = await fetchRandomMeal();
-        if (meal && !searchResults.some((m) => m.idMeal === meal.idMeal)) {
-          additionalMeals.push(meal);
-        }
-      }
-
-      if (additionalMeals.length === 0) {
-        toast.info('No more unique recipes found.');
-        return;
-      }
-
-      setSearchResults((prevResults) => [...prevResults, ...additionalMeals]);
-    } catch (error) {
-      console.error('Error fetching more results:', error);
-      toast.error('Failed to load more recipes.');
-    } finally {
-      setIsLoadingMoreResults(false);
-    }
-  };
-
   return (
     <SearchContext.Provider
       value={{
@@ -169,7 +138,6 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         suggestions,
         searchResults,
         isLoadingSearchResults,
-        isLoadingMoreResults,
         highlightedIndex, 
         setHighlightedIndex, 
         setQuery, 
@@ -178,18 +146,9 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         handleSearchTypeChange,
         handleSearchKeyDown,
         setSuggestions,
-        fetchMoreResults,
       }}
     >
       {children}
     </SearchContext.Provider>
   );
-};
-
-export const useSearch = (): SearchContextProps => {
-  const context = useContext(SearchContext);
-  if (context === undefined) {
-    throw new Error('useSearch must be used within a SearchProvider');
-  }
-  return context;
 };

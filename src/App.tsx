@@ -1,7 +1,12 @@
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { UserRecipesProvider, useUserRecipes } from './contexts/UserRecipesContext';
-import { SearchProvider, useSearch } from './contexts/SearchContext';
-import { SelectedMealProvider, useSelectedMeal } from './contexts/SelectedMealContext';
+import React from 'react';
+import { AuthProvider } from './contexts/AuthProvider';
+import { useAuth } from './hooks/useAuth';
+import { UserRecipesProvider } from './contexts/UserRecipesProvider';
+import { useUserRecipes } from './hooks/useUserRecipes';
+import { SearchProvider } from './contexts/SearchProvider';
+import { useSearch } from './hooks/useSearch';
+import { SelectedMealProvider } from './contexts/SelectedMealProvider';
+import { useSelectedMeal } from './hooks/useSelectedMeal';
 
 import SearchBar from './components/SearchBar';
 import SavedRecipes from './components/SavedRecipes';
@@ -35,6 +40,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="flex flex-col bg-slate-800 font-body font-main md:flex-row min-h-screen">
+      {/* Sidebar */}
       <div
         className="border-b md:border-r border-orange-300 p-4 overflow-auto
         md:sticky md:top-0 md:h-screen md:max-w-[20vw] xl:max-w-[14vw]
@@ -73,31 +79,33 @@ const AppContent: React.FC = () => {
 
         {userRecipes.length > 0 && <SavedRecipes />}
       </div>
+
+      {/* Main Content */}
       <div className="flex-1 px-6 md:px-8 mb-10 overflow-auto">
         <SearchBar />
-          <>
-            {isLoadingSearchResults ? (
-              <SkeletonList />
-            ) : searchResults.length > 0 ? (
-              <>
-                <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
-                  Search Results
-                </h2>
-                <RecipeList meals={searchResults} itemsPerPage={12} />
-              </>
-            ) : (
-              <>
+        <>
+          {isLoadingSearchResults ? (
+            <SkeletonList />
+          ) : searchResults.length > 0 ? (
+            <>
+              <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
+                Search Results
+              </h2>
+              <RecipeList meals={searchResults} itemsPerPage={12} />
+            </>
+          ) : (
+            <>
               {randomMeals.length > 0 && (
-                  <>
-                    <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
-                      In Need of Inspiration?
-                    </h2>
-                    <RecipeList meals={randomMeals} itemsPerPage={12} />
-                  </>
-                )}
-              </>
-            )}
-          </>
+                <>
+                  <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
+                    In Need of Inspiration?
+                  </h2>
+                  <RecipeList meals={randomMeals} itemsPerPage={12} />
+                </>
+              )}
+            </>
+          )}
+        </>
         <Modal isOpen={!!selectedMeal} onClose={clearSelectedMeal}>
           {selectedMeal && (
             <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />

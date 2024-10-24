@@ -1,6 +1,6 @@
 import React from 'react';
-import { useUserRecipes } from '../contexts/UserRecipesContext';
-import { useSelectedMeal } from '../contexts/SelectedMealContext';
+import { useUserRecipes } from '../hooks/useUserRecipes';
+import { useSelectedMeal } from '../hooks/useSelectedMeal';
 
 const SavedRecipes: React.FC = () => {
   const { userRecipes, deleteRecipeFromUser } = useUserRecipes();

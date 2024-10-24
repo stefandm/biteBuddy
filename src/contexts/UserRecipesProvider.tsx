@@ -1,15 +1,14 @@
-import React, { createContext, useState, useEffect, useCallback, useRef, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { addRecipe, listenToUserRecipes } from '../firebase/firestoreService';
-import {
-    fetchRandomMeal } from '../api/mealapi';
+import { fetchRandomMeal } from '../api/mealapi';
 import { Meal, Recipe } from '../types';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { toast } from 'react-toastify';
 import { writeBatch, doc } from 'firebase/firestore';
 import debounce from 'lodash/debounce';
 import { db } from '../firebase/config'; 
 
-interface UserRecipesContextProps {
+export interface UserRecipesContextProps {
   userRecipes: Recipe[];
   addRecipeToUser: (meal: Meal) => Promise<void>;
   deleteRecipeFromUser: (recipeId: string) => void;
@@ -17,7 +16,7 @@ interface UserRecipesContextProps {
   isLoadingRandomMeals: boolean;
 }
 
-const UserRecipesContext = createContext<UserRecipesContextProps | undefined>(undefined);
+export const UserRecipesContext = createContext<UserRecipesContextProps | undefined>(undefined);
 
 export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
@@ -142,12 +141,4 @@ export const UserRecipesProvider: React.FC<{ children: ReactNode }> = ({ childre
       {children}
     </UserRecipesContext.Provider>
   );
-};
-
-export const useUserRecipes = (): UserRecipesContextProps => {
-  const context = useContext(UserRecipesContext);
-  if (context === undefined) {
-    throw new Error('useUserRecipes must be used within a UserRecipesProvider');
-  }
-  return context;
 };
