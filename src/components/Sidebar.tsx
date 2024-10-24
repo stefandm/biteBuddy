@@ -1,4 +1,3 @@
-// src/components/Sidebar/Sidebar.tsx
 import React from 'react';
 import logoIMG from '/images/logoAndName.jpg';
 import { useAuth } from '../hooks/useAuth';

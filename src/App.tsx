@@ -1,4 +1,3 @@
-// src/App.tsx
 import React from 'react';
 import { AuthProvider } from './contexts/AuthProvider';
 import { UserRecipesProvider } from './contexts/UserRecipesProvider';

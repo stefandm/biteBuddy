@@ -1,4 +1,3 @@
-// src/components/SearchSection/SearchSection.tsx
 import React from 'react';
 import SearchBar from './SearchBar';
 import RecipeList from './RecipeList';
