@@ -5,7 +5,7 @@ import RecipeCard from './RecipeCard';
 interface RecipeListProps {
   meals: Meal[];
   itemsPerPage: number;
-  listType?: 'searchResults' | 'recommendations' | 'randomMeals'; // Optional prop to determine list type
+  listType?: 'searchResults' | 'randomMeals'; 
 }
 
 const RecipeList: React.FC<RecipeListProps> = ({ meals, itemsPerPage, listType = 'searchResults' }) => {
