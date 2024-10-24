@@ -30,7 +30,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
     : 'No instructions available.';
 
   return (
-    <div className=" flex flex-col text-white bg-slate-800 pb-6 px-4">
+    <div className=" flex flex-col text-white bg-slate-800 pb-4 px-4">
       <div className="flex flex-col items-center">
         <h2 className="text-5xl font-extrabold text-center my-10 text-orange-300 font-main">
           {selectedMeal.strMeal}
@@ -40,7 +40,7 @@ const ExpandedRecipeCard: React.FC<ExpandedRecipeCardProps> = ({
             loading="lazy"
             src={selectedMeal.strMealThumb}
             alt={selectedMeal.strMeal}
-            className="w-auto l-6 flex-1 object-cover h-[20vh]  md:h-[30vw] lg:max-h-[40vh] lg:max-w-[40vw] rounded-lg border-slate-100"
+            className="w-auto l-6 flex-1 lg:ml-4 object-cover h-[20vh]  md:h-[30vw] lg:max-h-[40vh] lg:max-w-[40vw] rounded-lg border-slate-100"
           />
           <div className="flex flex-col justify-evenly items-center mt-6 px-14 font-secondary">
             <h3 className="text-xl font-semibold mb-6">Ingredients:</h3>

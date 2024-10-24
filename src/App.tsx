@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { UserRecipesProvider, useUserRecipes } from './contexts/UserRecipesContext';
 import { SearchProvider, useSearch } from './contexts/SearchContext';
@@ -17,7 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AppContent: React.FC = () => {
   const { user, signIn, signOutUser } = useAuth();
-  const { selectedMeal, clearSelectedMeal, scrollToTopRef } = useSelectedMeal();
+  const { selectedMeal, clearSelectedMeal } = useSelectedMeal();
   const {
     userRecipes,
     addRecipeToUser,
@@ -27,16 +26,6 @@ const AppContent: React.FC = () => {
     searchResults,
     isLoadingSearchResults, 
   } = useSearch();
-
-  useEffect(() => {
-    if (selectedMeal) {
-      scrollToTopRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }, [selectedMeal, scrollToTopRef]);
-
   const handleAddRecipe = async () => {
     if (selectedMeal) {
       await addRecipeToUser(selectedMeal);
@@ -84,13 +73,8 @@ const AppContent: React.FC = () => {
 
         {userRecipes.length > 0 && <SavedRecipes />}
       </div>
-
       <div className="flex-1 px-6 md:px-8 mb-10 overflow-auto">
-        <div ref={scrollToTopRef}></div>
-
         <SearchBar />
-
-        {!selectedMeal && (
           <>
             {isLoadingSearchResults ? (
               <SkeletonList />
@@ -103,7 +87,6 @@ const AppContent: React.FC = () => {
               </>
             ) : (
               <>
-              
               {randomMeals.length > 0 && (
                   <>
                     <h2 className="text-4xl font-bold my-[5vh] text-center text-orange-300 [text-shadow:2px_2px_6px_#000000]">
@@ -115,8 +98,6 @@ const AppContent: React.FC = () => {
               </>
             )}
           </>
-        )}
-
         <Modal isOpen={!!selectedMeal} onClose={clearSelectedMeal}>
           {selectedMeal && (
             <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />

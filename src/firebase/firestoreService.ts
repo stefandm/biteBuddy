@@ -6,13 +6,12 @@ import { Meal } from '../types';
 
 export const addRecipe = async (userId: string, meal: Meal) => {
   try {
-      const docRef = await addDoc(collection(db, 'recipes'), {
+await addDoc(collection(db, 'recipes'), {
           userId,
           meal,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
       });
-      console.log('Recipe added with ID: ', docRef.id);
   } catch (e) {
       console.error('Error adding recipe: ', e);
   }
