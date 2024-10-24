@@ -1,59 +1,33 @@
-import React, { useRef } from 'react';
-import useClickOutside from '../hooks/useClickOutside';
-import { useSearch } from '../hooks/useSearch';
-import { useSelectedMeal } from '../hooks/useSelectedMeal';
-import { Meal } from '../types';
+import React from 'react';
+import { Meal } from '../../types';
 
-const SearchBar: React.FC = () => {
-  const {
-    query,
-    searchType,
-    suggestions,
-    highlightedIndex,
-    handleInputChange,
-    handleSearch,
-    handleSearchTypeChange,
-    handleSearchKeyDown,
-    setSuggestions,
-    setQuery,
-    setHighlightedIndex,
-  } = useSearch();
+interface SearchBarUIProps {
+  query: string;
+  searchType: 'recipe' | 'ingredient';
+  suggestions: Meal[];
+  highlightedIndex: number;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSearchTypeChange: (type: 'recipe' | 'ingredient') => void;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  handleSuggestionClick: (suggestion: Meal) => void;
+  suggestionsRef: React.RefObject<HTMLUListElement>;
+  inputRef: React.RefObject<HTMLInputElement>;
+}
 
-  const { selectMeal, clearSelectedMeal } = useSelectedMeal();
-
-  const suggestionsRef = useRef<HTMLUListElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useClickOutside({
-    ref: suggestionsRef,
-    handler: () => setSuggestions([]),
-  });
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await handleSearch();
-    clearSelectedMeal();
-    setSuggestions([]);
-    setQuery('');
-    setHighlightedIndex(-1); 
-    inputRef.current?.blur();
-  };
-
-  const handleSuggestionClick = (suggestion: Meal) => {
-    selectMeal(suggestion);
-    setSuggestions([]);
-    setQuery('');
-    setHighlightedIndex(-1); 
-    inputRef.current?.blur();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    handleSearchKeyDown(e, () => {
-      clearSelectedMeal();
-      inputRef.current?.blur();
-    });
-  };
-
+const SearchBarUI: React.FC<SearchBarUIProps> = ({
+  query,
+  searchType,
+  suggestions,
+  highlightedIndex,
+  handleInputChange,
+  handleSubmit,
+  handleSearchTypeChange,
+  handleKeyDown,
+  handleSuggestionClick,
+  suggestionsRef,
+  inputRef,
+}) => {
   return (
     <div className="relative mb-8 w-full md:max-w-md font-secondary">
       <form onSubmit={handleSubmit}>
@@ -138,4 +112,4 @@ const SearchBar: React.FC = () => {
   );
 };
 
-export default SearchBar;
+export default SearchBarUI;

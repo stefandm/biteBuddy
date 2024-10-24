@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchBar from './SearchBar';
+import SearchBar from './SearchBar/Container';
 import RecipeList from './RecipeList';
 import SkeletonList from './SkeletonList';
 import { useSearch } from '../hooks/useSearch';

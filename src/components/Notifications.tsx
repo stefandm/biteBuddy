@@ -1,4 +1,3 @@
-// src/components/Notifications/Notifications.tsx
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -6,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Notifications: React.FC = () => (
   <ToastContainer
     position="bottom-center"
-    autoClose={1500}
+    autoClose={400}
     hideProgressBar
     newestOnTop={false}
     closeOnClick

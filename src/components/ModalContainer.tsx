@@ -1,7 +1,6 @@
-// src/components/ModalContainer/ModalContainer.tsx
 import React from 'react';
 import Modal from './Modal';
-import ExpandedRecipeCard from './ExpandedRecipeCard';
+import ExpandedRecipeCardContainer from './ExpandedRecipeCard/Container';
 import { useSelectedMeal } from '../hooks/useSelectedMeal';
 import { useUserRecipes } from '../hooks/useUserRecipes';
 
@@ -19,7 +18,7 @@ const ModalContainer: React.FC = () => {
   return (
     <Modal isOpen={!!selectedMeal} onClose={clearSelectedMeal}>
       {selectedMeal && (
-        <ExpandedRecipeCard onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />
+        <ExpandedRecipeCardContainer onAddRecipe={handleAddRecipe} onClose={clearSelectedMeal} />
       )}
     </Modal>
   );
