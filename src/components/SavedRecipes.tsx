@@ -8,9 +8,10 @@ const SavedRecipes: React.FC = () => {
 
   return (
     <>
-      <h2 className="text-2xl text-orange-300 font-bold mt-14 mb-4 text-center">
-        Saved Recipes
-      </h2>
+    {userRecipes.length > 0 && 
+        (<h2 className="text-2xl text-orange-300 font-bold mt-14 mb-4 text-center">
+          Saved Recipes
+        </h2>)}
       <ul className="md:min-w-full">
         {userRecipes.map((recipe) => (
           <li
