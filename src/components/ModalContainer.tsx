@@ -11,7 +11,7 @@ const ModalContainer: React.FC = () => {
   const handleAddRecipe = async () => {
     if (selectedMeal) {
       await addRecipeToUser(selectedMeal);
-      clearSelectedMeal();
+      // clearSelectedMeal();
     }
   };
 
