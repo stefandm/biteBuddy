@@ -27,7 +27,7 @@ const ExpandedRecipeCardUI: React.FC<ExpandedRecipeCardUIProps> = ({
   return (
     <div className="flex flex-col text-white bg-slate-800 pb-4 px-4">
       <div className="flex flex-col items-center">
-        <h2 className="text-5xl font-extrabold text-center my-10 text-orange-300 font-main">
+        <h2 className="text-5xl font-extrabold text-center my-10 text-orange-300 font-main [text-shadow:2px_2px_6px_#000000]">
           {mealName}
         </h2>
         <div className="flex-col flex xl:flex-row justify-evenly items-center w-full">

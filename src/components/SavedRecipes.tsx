@@ -9,7 +9,7 @@ const SavedRecipes: React.FC = () => {
   return (
     <>
     {userRecipes.length > 0 && 
-        (<h2 className="text-2xl text-orange-300 font-bold mt-14 mb-4 text-center">
+        (<h2 className="text-2xl text-orange-300 font-bold mt-14 mb-4 text-center [text-shadow:2px_2px_6px_#000000]">
           Saved Recipes
         </h2>)}
       <ul className="md:min-w-full">
